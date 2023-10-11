@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://djvfkwai2nb83"]
+
+[ext_resource type="Script" path="res://scripts/controllers/MultiplayerController.cs" id="1_tk8wy"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_tk8wy")
+
+[node name="HostButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 282.0
+offset_top = 220.0
+offset_right = 448.0
+offset_bottom = 310.0
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 654.0
+offset_top = 226.0
+offset_right = 837.0
+offset_bottom = 305.0
+text = "Join
+"
+
+[node name="StartGameButton" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = 274.0
+offset_top = 359.0
+offset_right = 842.0
+offset_bottom = 435.0
+text = "Start!"
