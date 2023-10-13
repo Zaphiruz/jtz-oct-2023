@@ -10,10 +10,12 @@ public partial class MultiplayerController : Control
 	MultiplayerApi multiplayer;
 	ENetMultiplayerPeer peer;
 	GameManager gameManager;
+	SceneManager sceneManager;
 
 	public override void _Ready()
 	{
 		gameManager = GetNode<GameManager>("/root/GameManager");
+		sceneManager = GetNode<SceneManager>("/root/SceneManager");
 		multiplayer = GetTree().GetMultiplayer();
 
 		multiplayer.PeerConnected += _PeerConnected;
@@ -74,14 +76,14 @@ public partial class MultiplayerController : Control
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
 	public void StartGame()
 	{
-		// load scene
-		// add scene to tree
-		// hide node
 		GD.Print("Starting Game!");
+		sceneManager.ShowScene(SceneManager.SCENES.TEST_2_PLAYER, this);
 	}
 
 	public void HostGame()
 	{
+		if (peer != null) return;
+
 		peer = new ENetMultiplayerPeer();
 		Error error = peer.CreateServer(PORT, 4);
 		if (error != Error.Ok)
@@ -103,6 +105,8 @@ public partial class MultiplayerController : Control
 
 	public void JoinHost()
 	{
+		if (peer != null) return;
+
 		peer = new ENetMultiplayerPeer();
 		Error error = peer.CreateClient(ADDRESS, PORT);
 		if (error != Error.Ok)
