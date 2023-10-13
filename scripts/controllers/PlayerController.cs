@@ -3,9 +3,17 @@ using Godot.Collections;
 
 public partial class PlayerController : CharacterBody2D
 {
-	public const float speed = 30.0f;
 	private AnimatedSprite2D sprite;
-	private DIRECTIONS direction = DIRECTIONS.NONE;
+	private MultiplayerSynchronizer multiplayerSynchronizer;
+	private GameManager gameManager;
+
+	public const float speed = 30.0f;
+
+	[Export]
+	public DIRECTIONS direction = DIRECTIONS.NONE;
+
+	[Export]
+	public Vector2 position;
 
 	private Dictionary<DIRECTIONS, string> actionMap;
 	private Dictionary<DIRECTIONS, string> animationMap;
@@ -14,7 +22,10 @@ public partial class PlayerController : CharacterBody2D
 	public override void _Ready()
 	{
 		base._Ready();
+
 		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		multiplayerSynchronizer = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
+		gameManager = GetNode<GameManager>("/root/GameManager");
 
 		actionMap = new Dictionary<DIRECTIONS, string>()
 		{
@@ -40,32 +51,42 @@ public partial class PlayerController : CharacterBody2D
 			{ DIRECTIONS.DOWN, Vector2.Down },
 			{ DIRECTIONS.RIGHT, Vector2.Right },
 		};
+
+		multiplayerSynchronizer.SetMultiplayerAuthority((int) GetMeta("ID"));
+		position = GlobalPosition;
 	}
 
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
 
-		DIRECTIONS moveTo = DIRECTIONS.NONE;
-		string currentInput;
-		bool foundAction = actionMap.TryGetValue(direction, out currentInput);
-		if (foundAction && Input.IsActionPressed(currentInput))
+		if (multiplayerSynchronizer.GetMultiplayerAuthority() == gameManager.multiplayer.GetUniqueId())
 		{
-			moveTo = direction;
-		}
-		
-
-		foreach (System.Collections.Generic.KeyValuePair<DIRECTIONS, string> keyValuePair in actionMap)
-		{
-			if (Input.IsActionJustPressed(keyValuePair.Value))
+			DIRECTIONS moveTo = DIRECTIONS.NONE;
+			string currentInput;
+			bool foundAction = actionMap.TryGetValue(direction, out currentInput);
+			if (foundAction && Input.IsActionPressed(currentInput))
 			{
-				Move(keyValuePair.Key, speed);
-				return;
+				moveTo = direction;
 			}
-		}
 
-		Move(moveTo, speed);
-		return;
+
+			foreach (System.Collections.Generic.KeyValuePair<DIRECTIONS, string> keyValuePair in actionMap)
+			{
+				if (Input.IsActionJustPressed(keyValuePair.Value))
+				{
+					Move(keyValuePair.Key, speed);
+					return;
+				}
+			}
+
+			Move(moveTo, speed);
+			return;
+		} else
+		{
+			GlobalPosition = GlobalPosition.Lerp(position, .5f);
+			Animate(direction);
+		}
 	}
 
 	public void Move(DIRECTIONS direction, float speed)
@@ -75,6 +96,8 @@ public partial class PlayerController : CharacterBody2D
 		Vector2 delta = new Vector2();
 		transformMap.TryGetValue(direction, out delta);
 		Translate(delta);
+
+		position = GlobalPosition;
 
 		Animate(direction);
 	}

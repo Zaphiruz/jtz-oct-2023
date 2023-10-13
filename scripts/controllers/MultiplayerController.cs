@@ -7,7 +7,6 @@ public partial class MultiplayerController : Control
 	[Export] public int PORT = 8910;
 	const string INSERT_NAME = "steve";
 
-	MultiplayerApi multiplayer;
 	ENetMultiplayerPeer peer;
 	GameManager gameManager;
 	SceneManager sceneManager;
@@ -16,12 +15,11 @@ public partial class MultiplayerController : Control
 	{
 		gameManager = GetNode<GameManager>("/root/GameManager");
 		sceneManager = GetNode<SceneManager>("/root/SceneManager");
-		multiplayer = GetTree().GetMultiplayer();
 
-		multiplayer.PeerConnected += _PeerConnected;
-		multiplayer.PeerDisconnected += _PeerDisconnected;
-		multiplayer.ConnectedToServer += _ConnectedToServer;
-		multiplayer.ConnectionFailed += _ConnectionFailed;
+		gameManager.multiplayer.PeerConnected += _PeerConnected;
+		gameManager.multiplayer.PeerDisconnected += _PeerDisconnected;
+		gameManager.multiplayer.ConnectedToServer += _ConnectedToServer;
+		gameManager.multiplayer.ConnectionFailed += _ConnectionFailed;
 		
 		GetNode<Button>("/root/Node2D/Control/HostButton").Pressed += this.onHostButtonDown;
 		GetNode<Button>("/root/Node2D/Control/JoinButton").Pressed += this.onJoinButtonDown;
@@ -48,7 +46,7 @@ public partial class MultiplayerController : Control
 	public void _ConnectedToServer()
 	{
 		GD.Print("connected to server");
-		RpcId(1, new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), INSERT_NAME);
+		RpcId(1, new StringName(nameof(SendPlayerInfo)), gameManager.multiplayer.GetUniqueId(), INSERT_NAME);
 	}
 
 	public void _ConnectionFailed()
@@ -59,15 +57,18 @@ public partial class MultiplayerController : Control
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
 	public void SendPlayerInfo(long id, string name)
 	{
-		if(!gameManager.hasPlayer(id))
+		GD.Print("tryadd ", id);
+		if (!gameManager.hasPlayer(id))
 		{
 			gameManager.addPlayer(id, name);
 		}
 
-		if(multiplayer.IsServer())
+		if(gameManager.multiplayer.IsServer())
 		{
+			GD.Print("spread the wealth");
 			foreach(Player player in gameManager.getPlayers())
 			{
+				GD.Print("send ", player.id);
 				Rpc(new StringName(nameof(SendPlayerInfo)), player.id, player.name);
 			}
 		}
@@ -76,6 +77,8 @@ public partial class MultiplayerController : Control
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
 	public void StartGame()
 	{
+		if (peer == null) return;
+
 		GD.Print("Starting Game!");
 		sceneManager.ShowScene(SceneManager.SCENES.TEST_2_PLAYER, this);
 	}
@@ -93,9 +96,11 @@ public partial class MultiplayerController : Control
 		}
 		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
 
-		multiplayer.MultiplayerPeer = peer;
+		gameManager.multiplayer.MultiplayerPeer = peer;
 		GD.Print("Waiting For Players!");
-		Rpc(new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), INSERT_NAME);
+
+		gameManager.addPlayer(gameManager.multiplayer.GetUniqueId(), INSERT_NAME);
+		Rpc(new StringName(nameof(SendPlayerInfo)), gameManager.multiplayer.GetUniqueId(), INSERT_NAME);
 	}
 
 	public void onHostButtonDown()
@@ -115,7 +120,7 @@ public partial class MultiplayerController : Control
 			return;
 		}
 		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
-		multiplayer.MultiplayerPeer = peer;
+		gameManager.multiplayer.MultiplayerPeer = peer;
 	}
 
 	public void onJoinButtonDown()

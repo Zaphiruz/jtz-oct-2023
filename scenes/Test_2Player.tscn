@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bbob7w8vmigh"]
 
 [ext_resource type="Texture2D" uid="uid://288tijh6vp8f" path="res://assets/Tilesets/FDR_Village.png" id="1_4xwfb"]
-[ext_resource type="PackedScene" uid="uid://dvdxn5ut8p8g5" path="res://scene-objects/character.res" id="2_sdv3s"]
+[ext_resource type="Script" path="res://scripts/controllers/SpawnManager.cs" id="1_rlidj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qudxb"]
 texture = ExtResource("1_4xwfb")
@@ -529,6 +529,7 @@ tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_qudxb")
 
 [node name="Test_2Player" type="Node2D"]
+script = ExtResource("1_rlidj")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_pofsd")
@@ -578,5 +579,28 @@ layer_6/y_sort_origin = 0
 layer_6/z_index = 0
 layer_6/tile_data = PackedInt32Array()
 
-[node name="character" parent="." instance=ExtResource("2_sdv3s")]
-position = Vector2(558, 320)
+[node name="SpawnLocations" type="Node2D" parent="."]
+
+[node name="0" type="Node2D" parent="SpawnLocations" groups=["Left", "SpawnLocations"]]
+position = Vector2(48, 302)
+
+[node name="1" type="Node2D" parent="SpawnLocations" groups=["Left", "SpawnLocations"]]
+position = Vector2(49, 335)
+
+[node name="2" type="Node2D" parent="SpawnLocations" groups=["Left", "SpawnLocations"]]
+position = Vector2(16, 303)
+
+[node name="3" type="Node2D" parent="SpawnLocations" groups=["Left", "SpawnLocations"]]
+position = Vector2(16, 335)
+
+[node name="4" type="Node2D" parent="SpawnLocations" groups=["Right", "SpawnLocations"]]
+position = Vector2(1072, 303)
+
+[node name="5" type="Node2D" parent="SpawnLocations" groups=["Right", "SpawnLocations"]]
+position = Vector2(1072, 336)
+
+[node name="6" type="Node2D" parent="SpawnLocations" groups=["Right", "SpawnLocations"]]
+position = Vector2(1104, 303)
+
+[node name="7" type="Node2D" parent="SpawnLocations" groups=["Right", "SpawnLocations"]]
+position = Vector2(1105, 336)

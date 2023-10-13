@@ -13,8 +13,10 @@ public partial class SceneManager : Node
 
 	private Dictionary<SCENES, string> sceneDict;
 
-	public SceneManager()
+	public override void _Ready()
 	{
+		base._Ready();
+
 		sceneDict = new Dictionary<SCENES, string>()
 		{
 			{ SCENES.MULTIPLAYER_LOBBY, "res://scenes//Multplayer.tscn" },

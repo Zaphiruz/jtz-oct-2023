@@ -4,10 +4,13 @@ using Godot.Collections;
 public partial class GameManager : Node
 {
 	private Dictionary<long, Player> players;
+	public MultiplayerApi multiplayer { get; private set; }
 
-	public GameManager()
+	public override void _Ready()
 	{
+		base._Ready();
 		players = new Dictionary<long, Player>();
+		multiplayer = GetTree().GetMultiplayer();
 	}
 
 	public bool removePlayer(long id)
@@ -17,6 +20,7 @@ public partial class GameManager : Node
 
 	public void addPlayer(Player player)
 	{
+		GD.Print(multiplayer.GetUniqueId(), " add ", player.id);
 		players.Add(player.id, player);
 	}
 
