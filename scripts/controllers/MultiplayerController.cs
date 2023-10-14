@@ -14,9 +14,9 @@ public partial class MultiplayerController : Control
 
 	public override void _Ready()
 	{
-		gameManager = GetNode<GameManager>("/root/GameManager");
+		gameManager = GetNode<GameManager>(GameManager.NodePath);
 		multiplayer = gameManager.multiplayer;
-		sceneManager = GetNode<SceneManager>("/root/SceneManager");
+		sceneManager = GetNode<SceneManager>(SceneManager.NodePath);
 
 		multiplayer.PeerConnected += _PeerConnected;
 		multiplayer.PeerDisconnected += _PeerDisconnected;

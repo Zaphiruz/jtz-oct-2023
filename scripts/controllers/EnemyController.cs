@@ -3,8 +3,6 @@ using Godot.Collections;
 
 public partial class EnemyController : EntityController
 {
-	
-
 	public override void _Ready()
 	{
 		base._Ready();
@@ -29,20 +27,6 @@ public partial class EnemyController : EntityController
 		};
 
 		//multiplayerSynchronizer.SetMultiplayerAuthority(1);
-	}
-
-	public override void _Process(double delta)
-	{
-		base._Process(delta);
-
-		if (HasAuthority())
-		{
-			ClientMove();
-		}
-		else
-		{
-			// SyncState();
-		}
 	}
 
 	public override bool HasAuthority()

@@ -5,6 +5,7 @@ using System;
 
 public partial class SceneManager : Node
 {
+	public static string NodePath = "/root/SceneManager";
 	public enum SCENES
 	{
 		MULTIPLAYER_LOBBY,

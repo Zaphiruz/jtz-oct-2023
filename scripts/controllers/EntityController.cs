@@ -11,7 +11,7 @@ public partial class EntityController : CharacterBody2D
 	protected Dictionary<ENTITY_STATE, string> animationMap;
 	protected Dictionary<ENTITY_STATE, Vector2> transformMap;
 
-	public const float speed = 2f;
+	public const float speed = 250f;
 	public const float lerpWeight = .5f;
 
 	[Export]
@@ -26,7 +26,7 @@ public partial class EntityController : CharacterBody2D
 
 		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		multiplayerSynchronizer = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
-		gameManager = GetNode<GameManager>("/root/GameManager");
+		gameManager = GetNode<GameManager>(GameManager.NodePath);
 		area2D = GetNode<Area2D>("Area2D");
 		area2D.AreaEntered += OnAreaEntered;
 
@@ -50,15 +50,37 @@ public partial class EntityController : CharacterBody2D
 		position = GlobalPosition;
 	}
 
+	public override void _Process(double delta)
+	{
+		base._Process(delta);
+
+		if (!HasAuthority())
+		{
+			SyncState();
+		}
+	}
+
+	public override void _PhysicsProcess(double delta)
+	{
+		base._PhysicsProcess(delta);
+
+		if (HasAuthority())
+		{
+			ClientMove();
+		}
+	}
+
 	public virtual void Move(ENTITY_STATE state, float speed)
 	{
 		this.state = state;
 
 		Vector2 delta = new Vector2();
 		transformMap.TryGetValue(state, out delta);
-		//Translate(delta * speed);
 
-		GlobalPosition = GlobalPosition.Lerp(GlobalPosition + (delta * speed), lerpWeight);
+		Velocity = (delta * speed);
+
+		MoveAndSlide();
+
 		position = GlobalPosition;
 
 		Animate(state);

@@ -3,6 +3,8 @@ using Godot.Collections;
 
 public partial class GameManager : Node
 {
+	public static string NodePath = "/root/GameManager";
+
 	private Dictionary<long, Player> players;
 	public MultiplayerApi multiplayer { get; private set; }
 

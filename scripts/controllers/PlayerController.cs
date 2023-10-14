@@ -11,7 +11,7 @@ public partial class PlayerController : EntityController
 	{
 		base._Ready();
 
-		sceneManager = GetNode<SceneManager>("/root/SceneManager");
+		sceneManager = GetNode<SceneManager>(SceneManager.NodePath);
 
 		actionMap = new Dictionary<ENTITY_STATE, string>()
 		{
@@ -30,14 +30,6 @@ public partial class PlayerController : EntityController
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
-
-		if (HasAuthority())
-		{
-			ClientMove();
-		} else
-		{
-			SyncState();
-		}
 
 		inputCache.clearCache();
 	}
