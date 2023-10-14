@@ -5,7 +5,8 @@ public partial class PlayerController : EntityController
 {
 	protected Dictionary<ENTITY_STATE, string> actionMap;
 	protected SceneManager sceneManager;
-
+	protected InputCacher inputCache;
+	protected System.Collections.Generic.Stack<ENTITY_STATE> inputStack;
 	public override void _Ready()
 	{
 		base._Ready();
@@ -19,6 +20,9 @@ public partial class PlayerController : EntityController
 			{ ENTITY_STATE.DOWN, "DOWN" },
 			{ ENTITY_STATE.RIGHT, "RIGHT" },
 		};
+
+		inputCache = new InputCacher();
+		inputStack = new System.Collections.Generic.Stack<ENTITY_STATE>();
 
 		multiplayerSynchronizer.SetMultiplayerAuthority((int) GetMeta("ID"));
 	}
@@ -34,28 +38,35 @@ public partial class PlayerController : EntityController
 		{
 			SyncState();
 		}
+
+		inputCache.clearCache();
 	}
 
 	public override void ClientMove() {
-		ENTITY_STATE stateTo = ENTITY_STATE.NONE;
-		string currentInput;
-		bool foundAction = actionMap.TryGetValue(state, out currentInput);
-		if (foundAction && Input.IsActionPressed(currentInput))
-		{
-			stateTo = state;
-		}
-
-
 		foreach (System.Collections.Generic.KeyValuePair<ENTITY_STATE, string> keyValuePair in actionMap)
 		{
 			if (Input.IsActionJustPressed(keyValuePair.Value))
 			{
-				Move(keyValuePair.Key, speed);
-				return;
+				inputStack.Push(keyValuePair.Key);
 			}
 		}
 
-		Move(stateTo, speed);
+		while(inputStack.Count > 0)
+		{
+			ENTITY_STATE stateTo = inputStack.Peek();
+
+			string currentInput;
+			bool foundAction = actionMap.TryGetValue(stateTo, out currentInput);
+			if (foundAction && inputCache.checkInputPress(currentInput))
+			{
+				Move(stateTo, speed);
+				return;
+			}
+
+			inputStack.Pop();
+		}
+
+		Move(ENTITY_STATE.NONE, speed);
 	}
 
 	public override void OnAreaEntered(Area2D entity)
@@ -74,5 +85,32 @@ public partial class PlayerController : EntityController
 	{
 		GD.Print("Starting Battle!");
 		sceneManager.ShowScene(SceneManager.SCENES.TEST_BATTLE, this);
+	}
+}
+
+public class InputCacher {
+	private Dictionary<StringName, bool> pressCache;
+
+	public InputCacher()
+	{
+		pressCache = new Dictionary<StringName, bool>();
+	}
+
+	public void clearCache()
+	{
+		pressCache.Clear();
+	}
+
+	public bool checkInputPress(StringName action)
+	{
+		bool value;
+		bool success = pressCache.TryGetValue(action, out value);
+		if (success)
+			return value;
+
+		value = Input.IsActionPressed(action);
+		pressCache.Add(action, value);
+
+		return value;
 	}
 }
