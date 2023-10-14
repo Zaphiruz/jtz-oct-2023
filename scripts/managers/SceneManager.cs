@@ -8,7 +8,8 @@ public partial class SceneManager : Node
 	public enum SCENES
 	{
 		MULTIPLAYER_LOBBY,
-		TEST_2_PLAYER
+		TEST_2_PLAYER,
+		TEST_BATTLE
 	}
 
 	private Dictionary<SCENES, string> sceneDict;
@@ -20,7 +21,9 @@ public partial class SceneManager : Node
 		sceneDict = new Dictionary<SCENES, string>()
 		{
 			{ SCENES.MULTIPLAYER_LOBBY, "res://scenes//Multplayer.tscn" },
-			{ SCENES.TEST_2_PLAYER, "res://scenes//Test_2Player.tscn" }
+			{ SCENES.TEST_2_PLAYER, "res://scenes//Test_2Player.tscn" },
+			{ SCENES.TEST_BATTLE, "res://scenes//Test_Battle.tscn" },
+
 		};
 	}
 

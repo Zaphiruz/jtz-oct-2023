@@ -1,20 +1,27 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Linq;
 
-public partial class SpawnManager : Node2D
+public partial class SpawnController : Node2D
 {
 	private GameManager gameManager;
 
-	private PackedScene CharacterResource; 
+	private PackedScene CharacterResource;
+	private PackedScene EnemiesResource;
 
 	public override void _Ready()
 	{
 		gameManager = GetNode<GameManager>("/root/GameManager");
-
 		CharacterResource = GD.Load<PackedScene>("res://scene-objects//character.res");
+		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//enemy.res");
+		SpawnPlayers();
+		SpawnEncounters();
+	}
 
-		Array<Node> spawnPoints = GetTree().GetNodesInGroup("SpawnLocations");
+	public void SpawnPlayers()
+	{
+		Array<Node> spawnPoints = GetTree().GetNodesInGroup("PlayerSpawn");
 		int index = 0;
 		foreach (Player player in gameManager.getPlayers())
 		{
@@ -28,5 +35,15 @@ public partial class SpawnManager : Node2D
 
 			index++;
 		}
+	}
+
+	public void SpawnEncounters()
+	{
+		Array<Node> spawnPoints = GetTree().GetNodesInGroup("EncounterSpawn");
+		Node2D spawnPoint = (Node2D) spawnPoints.First();
+
+		CharacterBody2D enemy = (CharacterBody2D) EnemiesResource.Instantiate();
+		AddChild(enemy);
+		enemy.GlobalPosition = spawnPoint.GlobalPosition;
 	}
 }

@@ -7,6 +7,7 @@ public partial class MultiplayerController : Control
 	[Export] public int PORT = 8910;
 	const string INSERT_NAME = "steve";
 
+	MultiplayerApi multiplayer;
 	ENetMultiplayerPeer peer;
 	GameManager gameManager;
 	SceneManager sceneManager;
@@ -14,12 +15,13 @@ public partial class MultiplayerController : Control
 	public override void _Ready()
 	{
 		gameManager = GetNode<GameManager>("/root/GameManager");
+		multiplayer = gameManager.multiplayer;
 		sceneManager = GetNode<SceneManager>("/root/SceneManager");
 
-		gameManager.multiplayer.PeerConnected += _PeerConnected;
-		gameManager.multiplayer.PeerDisconnected += _PeerDisconnected;
-		gameManager.multiplayer.ConnectedToServer += _ConnectedToServer;
-		gameManager.multiplayer.ConnectionFailed += _ConnectionFailed;
+		multiplayer.PeerConnected += _PeerConnected;
+		multiplayer.PeerDisconnected += _PeerDisconnected;
+		multiplayer.ConnectedToServer += _ConnectedToServer;
+		multiplayer.ConnectionFailed += _ConnectionFailed;
 		
 		GetNode<Button>("/root/Node2D/Control/HostButton").Pressed += this.onHostButtonDown;
 		GetNode<Button>("/root/Node2D/Control/JoinButton").Pressed += this.onJoinButtonDown;
@@ -46,7 +48,7 @@ public partial class MultiplayerController : Control
 	public void _ConnectedToServer()
 	{
 		GD.Print("connected to server");
-		RpcId(1, new StringName(nameof(SendPlayerInfo)), gameManager.multiplayer.GetUniqueId(), INSERT_NAME);
+		RpcId(1, new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), INSERT_NAME);
 	}
 
 	public void _ConnectionFailed()
@@ -63,7 +65,7 @@ public partial class MultiplayerController : Control
 			gameManager.addPlayer(id, name);
 		}
 
-		if(gameManager.multiplayer.IsServer())
+		if(multiplayer.IsServer())
 		{
 			GD.Print("spread the wealth");
 			foreach(Player player in gameManager.getPlayers())
@@ -96,11 +98,11 @@ public partial class MultiplayerController : Control
 		}
 		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
 
-		gameManager.multiplayer.MultiplayerPeer = peer;
+		multiplayer.MultiplayerPeer = peer;
 		GD.Print("Waiting For Players!");
 
-		gameManager.addPlayer(gameManager.multiplayer.GetUniqueId(), INSERT_NAME);
-		Rpc(new StringName(nameof(SendPlayerInfo)), gameManager.multiplayer.GetUniqueId(), INSERT_NAME);
+		gameManager.addPlayer(multiplayer.GetUniqueId(), INSERT_NAME);
+		Rpc(new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), INSERT_NAME);
 	}
 
 	public void onHostButtonDown()
@@ -120,7 +122,7 @@ public partial class MultiplayerController : Control
 			return;
 		}
 		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
-		gameManager.multiplayer.MultiplayerPeer = peer;
+		multiplayer.MultiplayerPeer = peer;
 	}
 
 	public void onJoinButtonDown()

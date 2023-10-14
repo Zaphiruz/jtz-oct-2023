@@ -1,118 +1,78 @@
 using Godot;
 using Godot.Collections;
 
-public partial class PlayerController : CharacterBody2D
+public partial class PlayerController : EntityController
 {
-	private AnimatedSprite2D sprite;
-	private MultiplayerSynchronizer multiplayerSynchronizer;
-	private GameManager gameManager;
-
-	public const float speed = 30.0f;
-
-	[Export]
-	public DIRECTIONS direction = DIRECTIONS.NONE;
-
-	[Export]
-	public Vector2 position;
-
-	private Dictionary<DIRECTIONS, string> actionMap;
-	private Dictionary<DIRECTIONS, string> animationMap;
-	private Dictionary<DIRECTIONS, Vector2> transformMap;
+	protected Dictionary<ENTITY_STATE, string> actionMap;
+	protected SceneManager sceneManager;
 
 	public override void _Ready()
 	{
 		base._Ready();
 
-		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-		multiplayerSynchronizer = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
-		gameManager = GetNode<GameManager>("/root/GameManager");
+		sceneManager = GetNode<SceneManager>("/root/SceneManager");
 
-		actionMap = new Dictionary<DIRECTIONS, string>()
+		actionMap = new Dictionary<ENTITY_STATE, string>()
 		{
-			{ DIRECTIONS.UP, "UP" },
-			{ DIRECTIONS.LEFT, "LEFT" },
-			{ DIRECTIONS.DOWN, "DOWN" },
-			{ DIRECTIONS.RIGHT, "RIGHT" },
-		};
-
-		animationMap = new Dictionary<DIRECTIONS, string>()
-		{
-			{ DIRECTIONS.UP, "Up" },
-			{ DIRECTIONS.LEFT, "Left" },
-			{ DIRECTIONS.DOWN, "Down" },
-			{ DIRECTIONS.RIGHT, "Right" },
-		};
-
-		transformMap = new Dictionary<DIRECTIONS, Vector2>()
-		{
-			{ DIRECTIONS.NONE, Vector2.Zero },
-			{ DIRECTIONS.UP, Vector2.Up },
-			{ DIRECTIONS.LEFT, Vector2.Left },
-			{ DIRECTIONS.DOWN, Vector2.Down },
-			{ DIRECTIONS.RIGHT, Vector2.Right },
+			{ ENTITY_STATE.UP, "UP" },
+			{ ENTITY_STATE.LEFT, "LEFT" },
+			{ ENTITY_STATE.DOWN, "DOWN" },
+			{ ENTITY_STATE.RIGHT, "RIGHT" },
 		};
 
 		multiplayerSynchronizer.SetMultiplayerAuthority((int) GetMeta("ID"));
-		position = GlobalPosition;
 	}
 
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
 
-		if (multiplayerSynchronizer.GetMultiplayerAuthority() == gameManager.multiplayer.GetUniqueId())
+		if (HasAuthority())
 		{
-			DIRECTIONS moveTo = DIRECTIONS.NONE;
-			string currentInput;
-			bool foundAction = actionMap.TryGetValue(direction, out currentInput);
-			if (foundAction && Input.IsActionPressed(currentInput))
-			{
-				moveTo = direction;
-			}
-
-
-			foreach (System.Collections.Generic.KeyValuePair<DIRECTIONS, string> keyValuePair in actionMap)
-			{
-				if (Input.IsActionJustPressed(keyValuePair.Value))
-				{
-					Move(keyValuePair.Key, speed);
-					return;
-				}
-			}
-
-			Move(moveTo, speed);
-			return;
+			ClientMove();
 		} else
 		{
-			GlobalPosition = GlobalPosition.Lerp(position, .5f);
-			Animate(direction);
+			SyncState();
 		}
 	}
 
-	public void Move(DIRECTIONS direction, float speed)
-	{
-		this.direction = direction;
+	public override void ClientMove() {
+		ENTITY_STATE stateTo = ENTITY_STATE.NONE;
+		string currentInput;
+		bool foundAction = actionMap.TryGetValue(state, out currentInput);
+		if (foundAction && Input.IsActionPressed(currentInput))
+		{
+			stateTo = state;
+		}
 
-		Vector2 delta = new Vector2();
-		transformMap.TryGetValue(direction, out delta);
-		Translate(delta);
 
-		position = GlobalPosition;
+		foreach (System.Collections.Generic.KeyValuePair<ENTITY_STATE, string> keyValuePair in actionMap)
+		{
+			if (Input.IsActionJustPressed(keyValuePair.Value))
+			{
+				Move(keyValuePair.Key, speed);
+				return;
+			}
+		}
 
-		Animate(direction);
+		Move(stateTo, speed);
 	}
 
-	public void Animate(DIRECTIONS direction)
+	public override void OnAreaEntered(Area2D entity)
 	{
-		string animation;
-		bool hasAnimation = animationMap.TryGetValue(direction, out animation);
-		if (!hasAnimation)
+		if (HasAuthority())
 		{
-			sprite.Stop();
+			if (entity.CollisionLayer == 2)
+			{
+				Rpc(new StringName(nameof(StartBattle)));
+			}
 		}
-		else
-		{
-			sprite.Play(animation);
-		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+	public void StartBattle()
+	{
+		GD.Print("Starting Battle!");
+		sceneManager.ShowScene(SceneManager.SCENES.TEST_BATTLE, this);
 	}
 }
