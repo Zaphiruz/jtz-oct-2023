@@ -26,11 +26,13 @@ public partial class EnemyController : EntityController
 			{ ENTITY_STATE.DEAD, Vector2.Zero },
 		};
 
-		//multiplayerSynchronizer.SetMultiplayerAuthority(1);
+		SetAuthority(1);
 	}
 
-	public override bool HasAuthority()
+	public override void ClientMove()
 	{
-		return gameManager.multiplayer.IsServer();
+		base.ClientMove();
+
+		Move(state, speed);
 	}
 }

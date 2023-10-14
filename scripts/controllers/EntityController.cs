@@ -1,14 +1,13 @@
 using Godot;
 using Godot.Collections;
 
-public partial class EntityController : CharacterBody2D
+public partial class EntityController : CharacterBody2D, ITriggerable, IAnimateable, INetworkSynced
 {
 	protected AnimatedSprite2D sprite;
-	protected MultiplayerSynchronizer multiplayerSynchronizer;
+	public MultiplayerSynchronizer multiplayerSynchronizer { get; set; }
 	protected GameManager gameManager;
-	protected Area2D area2D;
-
-	protected Dictionary<ENTITY_STATE, string> animationMap;
+	public Area2D area2D { get; set; }
+	public Dictionary<ENTITY_STATE, string> animationMap { get; set; }
 	protected Dictionary<ENTITY_STATE, Vector2> transformMap;
 
 	public const float speed = 250f;
@@ -111,9 +110,12 @@ public partial class EntityController : CharacterBody2D
 		return multiplayerSynchronizer.GetMultiplayerAuthority() == gameManager.multiplayer.GetUniqueId();
 	}
 
+	public virtual void SetAuthority(int id, bool recursive = true)
+	{
+		multiplayerSynchronizer.SetMultiplayerAuthority(id, recursive);
+	}
+
 	public virtual void ClientMove() { }
 
 	public virtual void OnAreaEntered(Area2D entity) { }
-
-	public virtual void OnAreaExited(Area2D entity) { }
 }

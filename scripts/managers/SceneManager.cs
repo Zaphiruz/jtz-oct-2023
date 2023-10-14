@@ -3,7 +3,7 @@ using Godot.Collections;
 using System;
 
 
-public partial class SceneManager : Node
+public partial class SceneManager : Node, IGlobalInterface
 {
 	public static string NodePath = "/root/SceneManager";
 	public enum SCENES

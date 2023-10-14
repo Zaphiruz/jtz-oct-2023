@@ -24,7 +24,7 @@ public partial class PlayerController : EntityController
 		inputCache = new InputCacher();
 		inputStack = new System.Collections.Generic.Stack<ENTITY_STATE>();
 
-		multiplayerSynchronizer.SetMultiplayerAuthority((int) GetMeta("ID"));
+		SetAuthority((int)GetMeta("ID"));
 	}
 
 	public override void _Process(double delta)

@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
 
-public partial class GameManager : Node
+public partial class GameManager : Node, IGlobalInterface
 {
 	public static string NodePath = "/root/GameManager";
 
