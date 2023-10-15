@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://c8n177lun5po4"]
+
+[ext_resource type="Script" path="res://scripts/controllers/PlayerController.cs" id="1_retuq"]
+[ext_resource type="SpriteFrames" uid="uid://m70xli2sdgfn" path="res://scene-objects/Animations/Santa.tres" id="2_ri3hr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mhjmn"]
+size = Vector2(14, 19)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tdf8j"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:state")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vqwvr"]
+size = Vector2(16, 21)
+
+[node name="Character" type="CharacterBody2D"]
+collision_mask = 15
+motion_mode = 1
+script = ExtResource("1_retuq")
+metadata/ID = 0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_ri3hr")
+animation = &"Up"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_mhjmn")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.17
+delta_interval = 0.17
+replication_config = SubResource("SceneReplicationConfig_tdf8j")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_vqwvr")
+debug_color = Color(0.635294, 0.341176, 1, 0.192157)

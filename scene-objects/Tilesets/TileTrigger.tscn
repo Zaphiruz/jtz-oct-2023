@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dudwu847g7i88"]
+
+[ext_resource type="Script" path="res://scripts/controllers/TriggerController.cs" id="1_s5xnj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ic2bi"]
+
+[node name="0" type="Node2D" groups=["Trigger"]]
+position = Vector2(562, 602)
+script = ExtResource("1_s5xnj")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_ic2bi")
+debug_color = Color(0, 0.647059, 0.243137, 0.321569)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/controllers/SpawnController.cs" id="1_ohlte"]
 [ext_resource type="TileSet" uid="uid://dtmed6gx1p41b" path="res://scene-objects/Tilesets/CastleTileset.tres" id="2_lu1iy"]
-[ext_resource type="PackedScene" uid="uid://degyp8q276pmx" path="res://scene-objects/Tilesets/TileTrigger.res" id="3_0khqa"]
+[ext_resource type="PackedScene" uid="uid://dudwu847g7i88" path="res://scene-objects/Tilesets/TileTrigger.tscn" id="3_0khqa"]
 
 [node name="Test_2Player" type="Node2D"]
 script = ExtResource("1_ohlte")
@@ -89,6 +89,7 @@ position = Vector2(978, 114)
 [node name="Triggers" type="Node2D" parent="."]
 
 [node name="0" parent="Triggers" instance=ExtResource("3_0khqa")]
+position = Vector2(561, 619)
 
 [node name="1" parent="Triggers" instance=ExtResource("3_0khqa")]
-position = Vector2(591, 602)
+position = Vector2(591, 619)
