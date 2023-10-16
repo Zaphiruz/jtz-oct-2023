@@ -14,18 +14,18 @@ public partial class MultiplayerController : Control
 
 	public override void _Ready()
 	{
-		gameManager = GetNode<GameManager>(GameManager.NodePath);
+		gameManager = GameManager.GetInstance(this);
 		multiplayer = gameManager.multiplayer;
-		sceneManager = GetNode<SceneManager>(SceneManager.NodePath);
+		sceneManager = SceneManager.GetInstance(this);
 
 		multiplayer.PeerConnected += _PeerConnected;
 		multiplayer.PeerDisconnected += _PeerDisconnected;
 		multiplayer.ConnectedToServer += _ConnectedToServer;
 		multiplayer.ConnectionFailed += _ConnectionFailed;
 		
-		GetNode<Button>("/root/Node2D/Control/HostButton").Pressed += this.onHostButtonDown;
-		GetNode<Button>("/root/Node2D/Control/JoinButton").Pressed += this.onJoinButtonDown;
-		GetNode<Button>("/root/Node2D/Control/StartGameButton").Pressed += this.onStartGameButtonDown;
+		GetNode<Button>("VBoxContainer/HBoxContainer/HostButton").Pressed += this.onHostButtonDown;
+		GetNode<Button>("VBoxContainer/HBoxContainer/JoinButton").Pressed += this.onJoinButtonDown;
+		GetNode<Button>("VBoxContainer/StartGameButton").Pressed += this.onStartGameButtonDown;
 	}
 
 	public override void _Process(double delta)

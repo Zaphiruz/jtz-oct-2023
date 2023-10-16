@@ -12,7 +12,7 @@ public partial class SpawnController : Node2D
 
 	public override void _Ready()
 	{
-		gameManager = GetNode<GameManager>(GameManager.NodePath);
+		gameManager = GameManager.GetInstance(this);
 		CharacterResource = GD.Load<PackedScene>("res://scene-objects//Entities//Character.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
 		SpawnPlayers();

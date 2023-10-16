@@ -25,7 +25,7 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 
 		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		multiplayerSynchronizer = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
-		gameManager = GetNode<GameManager>(GameManager.NodePath);
+		gameManager = GameManager.GetInstance(this);
 		area2D = GetNode<Area2D>("Area2D");
 		area2D.AreaEntered += OnAreaEntered;
 

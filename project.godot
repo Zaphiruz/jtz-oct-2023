@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="JTZ-Oct-2023"
-run/main_scene="res://scenes/Multiplayer.tscn"
+run/main_scene="res://scenes/StartGame.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 GameManager="*res://scripts/managers/GameManager.cs"
 SceneManager="*res://scripts/managers/SceneManager.cs"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
 
 [dotnet]
 

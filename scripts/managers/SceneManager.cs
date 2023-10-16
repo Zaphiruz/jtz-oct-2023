@@ -3,11 +3,14 @@ using Godot.Collections;
 using System;
 
 
-public partial class SceneManager : Node, IGlobalInterface
+public partial class SceneManager : Node, IGlobalInterface<SceneManager>
 {
 	public static string NodePath = "/root/SceneManager";
+	public static SceneManager GetInstance(Node context) => context.GetNode<SceneManager>(NodePath);
+
 	public enum SCENES
 	{
+		START_GAME,
 		MULTIPLAYER_LOBBY,
 		TEST_2_PLAYER,
 		TEST_BATTLE
@@ -21,7 +24,8 @@ public partial class SceneManager : Node, IGlobalInterface
 
 		sceneDict = new Dictionary<SCENES, string>()
 		{
-			{ SCENES.MULTIPLAYER_LOBBY, "res://scenes//Multplayer.tscn" },
+			{ SCENES.START_GAME, "res://scenes//StartGame.tscn" },
+			{ SCENES.MULTIPLAYER_LOBBY, "res://scenes//Multiplayer.tscn" },
 			{ SCENES.TEST_2_PLAYER, "res://scenes//Test_2Player.tscn" },
 			{ SCENES.TEST_BATTLE, "res://scenes//Test_Battle.tscn" },
 

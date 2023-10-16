@@ -1,9 +1,10 @@
 using Godot;
 using Godot.Collections;
 
-public partial class GameManager : Node, IGlobalInterface
+public partial class GameManager : Node, IGlobalInterface<GameManager>
 {
 	public static string NodePath = "/root/GameManager";
+	public static GameManager GetInstance(Node context) => context.GetNode<GameManager>(NodePath);
 
 	private Dictionary<long, Player> players;
 	public MultiplayerApi multiplayer { get; private set; }

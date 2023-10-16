@@ -11,7 +11,7 @@ public partial class PlayerController : EntityController
 	{
 		base._Ready();
 
-		sceneManager = GetNode<SceneManager>(SceneManager.NodePath);
+		sceneManager = SceneManager.GetInstance(this);
 
 		actionMap = new Dictionary<ENTITY_STATE, string>()
 		{
