@@ -3,20 +3,23 @@ using System.Collections.Generic;
 
 public partial class MultiplayerController : Control
 {
-	[Export] public string ADDRESS = "127.0.0.1";
-	[Export] public int PORT = 8910;
-	const string INSERT_NAME = "steve";
+	[Export]
+	public string ADDRESS = "127.0.0.1";
+	[Export]
+	public int PORT = 8910;
 
 	MultiplayerApi multiplayer;
 	ENetMultiplayerPeer peer;
 	GameManager gameManager;
 	SceneManager sceneManager;
+	DataManager dataManager;
 
 	public override void _Ready()
 	{
 		gameManager = GameManager.GetInstance(this);
 		multiplayer = gameManager.multiplayer;
 		sceneManager = SceneManager.GetInstance(this);
+		dataManager = DataManager.GetInstance(this);
 
 		multiplayer.PeerConnected += _PeerConnected;
 		multiplayer.PeerDisconnected += _PeerDisconnected;
@@ -48,7 +51,7 @@ public partial class MultiplayerController : Control
 	public void _ConnectedToServer()
 	{
 		GD.Print("connected to server");
-		RpcId(1, new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), INSERT_NAME);
+		RpcId(1, new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), dataManager.GetConfigValue<string>("PlayerName"));
 	}
 
 	public void _ConnectionFailed()
@@ -101,8 +104,10 @@ public partial class MultiplayerController : Control
 		multiplayer.MultiplayerPeer = peer;
 		GD.Print("Waiting For Players!");
 
-		gameManager.addPlayer(multiplayer.GetUniqueId(), INSERT_NAME);
-		Rpc(new StringName(nameof(SendPlayerInfo)), multiplayer.GetUniqueId(), INSERT_NAME);
+		long id = multiplayer.GetUniqueId();
+		string name = dataManager.GetConfigValue<string>("PlayerName");
+		gameManager.addPlayer(id, name);
+		Rpc(new StringName(nameof(SendPlayerInfo)), id, name);
 	}
 
 	public void onHostButtonDown()

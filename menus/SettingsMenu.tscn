@@ -71,8 +71,9 @@ theme_override_constants/separation = 45
 
 [node name="MenuTextEdit" parent="MarginContainer/VBoxContainer/TabContainer/Game Play/MarginContainer/ScrollContainer/VBoxContainer" instance=ExtResource("3_rrrs7")]
 layout_mode = 2
-key = "Name"
+key = "PlayerName"
 placeholder = "Player Name"
+label = "Name"
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/TabContainer/Game Play/MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
