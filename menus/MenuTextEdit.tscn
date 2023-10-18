@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://6cfam7tphkmq"]
+
+[ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_el6la"]
+[ext_resource type="Script" path="res://scripts/controllers/MenuTextEditController.cs" id="2_puplq"]
+
+[node name="MenuTextEdit" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+theme = ExtResource("1_el6la")
+script = ExtResource("2_puplq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -454.0
+offset_right = 454.0
+offset_bottom = 30.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(400, 30)
+layout_mode = 2
+text = "Label"
+
+[node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 100
+
+[node name="TextEdit" type="TextEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(400, 30)
+layout_mode = 2
+placeholder_text = "Value"

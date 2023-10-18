@@ -1,21 +1,21 @@
 using Godot;
-using System;
 
 public partial class StartGameController : Control
 {
-	
-	Button PlayButton;
-	Button QuitButton;
 	SceneManager sceneManager;
+	SettingsController settingsController;
+
 	
+
 	public override void _Ready()
 	{
 		sceneManager = SceneManager.GetInstance(this);
 
-		PlayButton = GetNode<Button>("VSplitContainer/BottomCenterContainer/GridContainer/Play");
-		PlayButton.Pressed += onStartButtonPressed;
-		QuitButton = GetNode<Button>("VSplitContainer/BottomCenterContainer/GridContainer/Quit");
-		QuitButton.Pressed += onQuitButtonPressed;
+		GetNode<Button>("VSplitContainer/BottomCenterContainer/GridContainer/Play").Pressed += onStartButtonPressed;
+		GetNode<Button>("VSplitContainer/BottomCenterContainer/GridContainer/Settings").Pressed += onSettingsButtonPressed;
+		GetNode<Button>("VSplitContainer/BottomCenterContainer/GridContainer/Quit").Pressed += onQuitButtonPressed;
+		settingsController = GetNode<SettingsController>("SettingsMenu");
+		settingsController.ExitSettings += onSettingsExitSignal;
 	}
 	
 	public void onStartButtonPressed() {
@@ -24,5 +24,15 @@ public partial class StartGameController : Control
 	
 	public void onQuitButtonPressed() {
 		GetTree().Quit();
+	}
+
+	public void onSettingsButtonPressed()
+	{
+		settingsController.Visible = true;
+	}
+
+	public void onSettingsExitSignal()
+	{
+		settingsController.Visible = false;
 	}
 }

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://djvfkwai2nb83"]
 
-[ext_resource type="Theme" uid="uid://brt43tq62hpe8" path="res://themes/ornate-theme/ornate-theme.tres" id="1_ex4f5"]
+[ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_dc2c1"]
 [ext_resource type="Script" path="res://scripts/controllers/MultiplayerController.cs" id="1_tk8wy"]
 
 [node name="Multiplayer" type="Control"]
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_ex4f5")
+theme = ExtResource("1_dc2c1")
 script = ExtResource("1_tk8wy")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -37,16 +37,16 @@ split_offset = 550
 
 [node name="HostButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 250
+theme_override_font_sizes/font_size = 160
 text = "Host"
 
 [node name="JoinButton" type="Button" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 250
+theme_override_font_sizes/font_size = 160
 text = "Join
 "
 
 [node name="StartGameButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 250
+theme_override_font_sizes/font_size = 160
 text = "Start"

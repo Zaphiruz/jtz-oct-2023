@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cgwlh74g7t50t"]
+[gd_scene load_steps=4 format=3 uid="uid://cgwlh74g7t50t"]
 
+[ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_b0p0x"]
 [ext_resource type="Script" path="res://scripts/controllers/StartGameController.cs" id="1_wf1d4"]
-[ext_resource type="Theme" uid="uid://brt43tq62hpe8" path="res://themes/ornate-theme/ornate-theme.tres" id="4_81fgl"]
+[ext_resource type="PackedScene" uid="uid://c2x1by6cf2jh3" path="res://menus/SettingsMenu.tscn" id="3_v4i2p"]
 
 [node name="StartGame" type="Control"]
 layout_mode = 3
@@ -10,7 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("4_81fgl")
+theme = ExtResource("1_b0p0x")
 script = ExtResource("1_wf1d4")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -36,7 +37,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="VSplitContainer/TopCenterContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderLarge"
-theme_override_font_sizes/font_size = 250
+theme_override_font_sizes/font_size = 120
 text = "JTZ Oct 2023"
 
 [node name="BottomCenterContainer" type="CenterContainer" parent="VSplitContainer"]
@@ -47,16 +48,20 @@ layout_mode = 2
 
 [node name="Play" type="Button" parent="VSplitContainer/BottomCenterContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 75
+theme_override_font_sizes/font_size = 60
 text = "Play"
 
-[node name="Settings" type="MenuButton" parent="VSplitContainer/BottomCenterContainer/GridContainer"]
+[node name="Settings" type="Button" parent="VSplitContainer/BottomCenterContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 75
+theme_override_font_sizes/font_size = 60
 text = "Settings
 "
 
 [node name="Quit" type="Button" parent="VSplitContainer/BottomCenterContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 75
+theme_override_font_sizes/font_size = 60
 text = "Quit"
+
+[node name="SettingsMenu" parent="." instance=ExtResource("3_v4i2p")]
+visible = false
+layout_mode = 1
