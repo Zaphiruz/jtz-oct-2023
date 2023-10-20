@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public partial class MultiplayerController : Control
 {
 	private Server server;
-	private GameManager gameManager;
 	private SceneManager sceneManager;
 	private DataManager dataManager;
 
@@ -14,31 +13,10 @@ public partial class MultiplayerController : Control
 	{
 		server = Server.GetInstance(this);
 		multiplayer = server.multiplayer;
-		gameManager = GameManager.GetInstance(this);
 		sceneManager = SceneManager.GetInstance(this);
 		dataManager = DataManager.GetInstance(this);
 
 		GetNode<Button>("StartGameButton").Pressed += this.onStartGameButtonDown;
-	}
-
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void SendPlayerInfo(long id, string name)
-	{
-		GD.Print("tryadd ", id);
-		if (!gameManager.hasPlayer(id))
-		{
-			gameManager.addPlayer(id, name);
-		}
-
-		if(multiplayer.IsServer())
-		{
-			GD.Print("spread the wealth");
-			foreach(Player player in gameManager.getPlayers())
-			{
-				GD.Print("send ", player.id);
-				Rpc(new StringName(nameof(SendPlayerInfo)), player.id, player.name);
-			}
-		}
 	}
 
 	public void StartGame()
