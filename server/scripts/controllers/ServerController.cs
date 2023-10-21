@@ -15,26 +15,27 @@ public partial class ServerController : Node
 	{
 		base._Ready();
 
-		network = new ENetMultiplayerPeer();
-		multiplayer = GetTree().GetMultiplayer();
-		multiplayer.PeerConnected += ClientConnected;
-		multiplayer.PeerDisconnected += ClientDisconencted;
-
 		StartServer();
 	}
 
-	public void StartServer()
+	public Error StartServer()
 	{
+		network = new ENetMultiplayerPeer();
 		Error error = network.CreateServer(PORT, MAX_CLIENTS);
 		if (error != Error.Ok)
 		{
 			GD.PrintErr("Failed to start server", error);
 		} else
 		{
+			multiplayer = GetTree().GetMultiplayer();
 			multiplayer.MultiplayerPeer = network;
+			multiplayer.PeerConnected += ClientConnected;
+			multiplayer.PeerDisconnected += ClientDisconencted;
 
 			GD.Print("Server Started");
 		}
+
+		return error;
 	}
 
 	public void ClientConnected(long id)
