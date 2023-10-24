@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://d26otwkb3ks7m"]
+[gd_scene load_steps=6 format=3 uid="uid://d26otwkb3ks7m"]
 
 [ext_resource type="Script" path="res://scripts/controllers/EnemyController.cs" id="1_7uelu"]
 [ext_resource type="PackedScene" uid="uid://4qe0uy0fd0ud" path="res://scene-objects/Animations/AnimatorController.tscn" id="2_7wyj8"]
@@ -6,16 +6,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_we5ds"]
 size = Vector2(10, 9)
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2wm84"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/sync = true
-properties/0/watch = false
-properties/1/path = NodePath(".:state")
-properties/1/spawn = true
-properties/1/sync = true
-properties/1/watch = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_swm2t"]
 size = Vector2(12, 11)
@@ -28,16 +18,18 @@ script = ExtResource("1_7uelu")
 
 [node name="AnimatorController" parent="." instance=ExtResource("2_7wyj8")]
 texture = ExtResource("2_rynaf")
+animationMap = {
+0: "Up",
+1: "Left",
+2: "Down",
+3: "Right",
+4: "Die"
+}
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6.5)
 shape = SubResource("RectangleShape2D_we5ds")
 debug_color = Color(1, 0.6, 0.701961, 0.419608)
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_interval = 0.17
-delta_interval = 0.17
-replication_config = SubResource("SceneReplicationConfig_2wm84")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 2

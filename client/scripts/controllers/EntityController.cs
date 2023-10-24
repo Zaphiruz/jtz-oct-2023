@@ -1,10 +1,9 @@
 using Godot;
 using Godot.Collections;
 
-public partial class EntityController : CharacterBody2D, ITriggerable, IAnimateable, INetworkSynced
+public partial class EntityController : CharacterBody2D, ITriggerable, IAnimateable
 {
 	protected AnimatorController animator;
-	public MultiplayerSynchronizer multiplayerSynchronizer { get; set; }
 	protected GameManager gameManager;
 	public Area2D area2D { get; set; }
 	public Dictionary<ENTITY_STATE, string> animationMap { get; set; }
@@ -23,8 +22,7 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	{
 		base._Ready();
 
-		animator = GetNode<AnimatorController>("PlayerAnimator");
-		multiplayerSynchronizer = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
+		animator = GetNode<AnimatorController>("AnimatorController");
 		gameManager = GameManager.GetInstance(this);
 		area2D = GetNode<Area2D>("Area2D");
 		area2D.AreaEntered += OnAreaEntered;
@@ -47,26 +45,6 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		};
 
 		position = GlobalPosition;
-	}
-
-	public override void _Process(double delta)
-	{
-		base._Process(delta);
-
-		if (!HasAuthority())
-		{
-			SyncState();
-		}
-	}
-
-	public override void _PhysicsProcess(double delta)
-	{
-		base._PhysicsProcess(delta);
-
-		if (HasAuthority())
-		{
-			ClientMove();
-		}
 	}
 
 	public virtual void Move(ENTITY_STATE state, float speed)
@@ -99,18 +77,8 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 
 	public virtual void SyncState()
 	{
-		GlobalPosition = GlobalPosition.Lerp(position, .1f);
-		Animate(state);
-	}
-
-	public virtual bool HasAuthority()
-	{
-		return multiplayerSynchronizer.GetMultiplayerAuthority() == gameManager.multiplayer.GetUniqueId();
-	}
-
-	public virtual void SetAuthority(int id, bool recursive = true)
-	{
-		multiplayerSynchronizer.SetMultiplayerAuthority(id, recursive);
+		// GlobalPosition = GlobalPosition.Lerp(position, .1f);
+		// Animate(state);
 	}
 
 	public virtual void ClientMove() { }

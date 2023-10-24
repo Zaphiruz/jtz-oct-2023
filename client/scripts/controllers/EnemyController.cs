@@ -16,14 +16,12 @@ public partial class EnemyController : EntityController
 			{ ENTITY_STATE.RIGHT, Vector2.Right },
 			{ ENTITY_STATE.DEAD, Vector2.Zero },
 		};
-
-		SetAuthority(1);
 	}
 
-	public override void ClientMove()
+	public override void _Process(double delta)
 	{
-		base.ClientMove();
+		base._Process(delta);
 
-		Move(state, speed);
+		SyncState();
 	}
 }

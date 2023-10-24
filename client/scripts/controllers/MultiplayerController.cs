@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public partial class MultiplayerController : Control
 {
+	public static string LABEL = "Multiplayer";
+
+
 	private Server server;
 	private SceneManager sceneManager;
 	private DataManager dataManager;
@@ -17,7 +20,7 @@ public partial class MultiplayerController : Control
 
 	public override void _Ready()
 	{
-		server = Server.GetInstance(this);
+		server = Server.GetInstance(this, "Multiplayer");
 		multiplayer = server.multiplayer;
 		sceneManager = SceneManager.GetInstance(this);
 		dataManager = DataManager.GetInstance(this);
@@ -37,7 +40,7 @@ public partial class MultiplayerController : Control
 		passwordLineEdit.Editable = false;
 
 		// Error error = gateway.ConnectToServer(userName, password);
-		Error error = server.ConnectToServer(GetInstanceId());
+		Error error = server.ConnectToServer();
 		if (error == Error.Ok)
 		{
 			userNameLineEdit.Text = userName = "";

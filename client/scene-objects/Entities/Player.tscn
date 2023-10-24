@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8n177lun5po4"]
+[gd_scene load_steps=6 format=3 uid="uid://c8n177lun5po4"]
 
 [ext_resource type="Script" path="res://scripts/controllers/PlayerController.cs" id="1_1fpw1"]
 [ext_resource type="PackedScene" uid="uid://4qe0uy0fd0ud" path="res://scene-objects/Animations/AnimatorController.tscn" id="2_ve83g"]
@@ -6,16 +6,6 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mhjmn"]
 size = Vector2(14, 19)
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tdf8j"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/sync = true
-properties/0/watch = false
-properties/1/path = NodePath(".:state")
-properties/1/spawn = true
-properties/1/sync = true
-properties/1/watch = false
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vqwvr"]
 size = Vector2(16, 21)
@@ -28,15 +18,16 @@ metadata/ID = 0
 
 [node name="AnimatorController" parent="." instance=ExtResource("2_ve83g")]
 texture = ExtResource("3_u8pt6")
+animationMap = {
+0: "Up",
+1: "Left",
+2: "Down",
+4: "Right"
+}
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2.5)
 shape = SubResource("RectangleShape2D_mhjmn")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_interval = 0.17
-delta_interval = 0.17
-replication_config = SubResource("SceneReplicationConfig_tdf8j")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_mask = 2

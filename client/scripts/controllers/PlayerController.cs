@@ -23,14 +23,13 @@ public partial class PlayerController : EntityController
 
 		inputCache = new InputCacher();
 		inputStack = new System.Collections.Generic.Stack<ENTITY_STATE>();
-
-		SetAuthority((int)GetMeta("ID"));
 	}
 
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
 
+		ClientMove();
 		inputCache.clearCache();
 	}
 
@@ -63,21 +62,18 @@ public partial class PlayerController : EntityController
 
 	public override void OnAreaEntered(Area2D entity)
 	{
-		if (HasAuthority())
+		if (entity.CollisionLayer == 2)
 		{
-			if (entity.CollisionLayer == 2)
-			{
-				Rpc(new StringName(nameof(StartBattle)));
-			}
+			// Rpc(new StringName(nameof(StartBattle)));
 		}
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-	public void StartBattle()
-	{
-		GD.Print("Starting Battle!");
-		sceneManager.ShowScene(SceneManager.SCENES.TEST_BATTLE, this);
-	}
+	// [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+	// public void StartBattle()
+	// {
+	// 	GD.Print("Starting Battle!");
+	// 	sceneManager.ShowScene(SceneManager.SCENES.TEST_BATTLE, this);
+	// }
 }
 
 public class InputCacher {

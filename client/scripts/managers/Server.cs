@@ -1,9 +1,25 @@
 using Godot;
+using Godot.Collections;
+
+public partial class SceneData : GodotObject {
+	public ulong instanceId;
+	public string name;
+
+	public SceneData(ulong instanceId, string name)
+	{
+		this.instanceId = instanceId;
+		this.name = name;
+	}
+}
 
 public partial class Server : Node, IGlobalInterface<Server>
 {
 	public static string NodePath = "/root/Server";
-	public static Server GetInstance(Node context) => context.GetNode<Server>(NodePath);
+	public static Server GetInstance(Node context, string Name) {
+		Server server = context.GetNode<Server>(NodePath);
+		if (Name != null) server.SceneMap.Add(Name, new SceneData(context.GetInstanceId(), Name));
+		return server;
+	}
 
 	[Export]
 	public string ADDRESS = "127.0.0.1";
@@ -13,7 +29,16 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public MultiplayerApi multiplayer { get; private set; }
 	private ENetMultiplayerPeer client;
 
-	public Error ConnectToServer(ulong instanceId)
+	// jank?
+	private Dictionary<string, SceneData> SceneMap;
+	
+	public override void _Ready()
+	{
+		SceneMap = new Dictionary<string, SceneData>();
+	}
+
+
+	public Error ConnectToServer()
 	{
 		client = new ENetMultiplayerPeer();
 		
@@ -25,7 +50,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 		{
 			GD.Print("client created");
 			multiplayer = GetTree().GetMultiplayer();
-			multiplayer.ConnectedToServer += () => _ConnectedToServer(instanceId);
+			multiplayer.ConnectedToServer +=  _ConnectedToServer;
 			multiplayer.ConnectionFailed += _ConnectionFailed;
 			multiplayer.MultiplayerPeer = client;
 		}
@@ -33,10 +58,22 @@ public partial class Server : Node, IGlobalInterface<Server>
 		return error;
 	}
 
-	public void _ConnectedToServer(ulong instanceId)
+	public T getInstanceOf<T>(string Name) where T : Node
+	{
+		SceneData data;
+		if (SceneMap.TryGetValue(Name, out data))
+		{
+			return ((T) InstanceFromId(data.instanceId));
+		} else
+		{
+			return null;
+		}
+	}
+
+	public void _ConnectedToServer()
 	{
 		GD.Print("connected to server");
-		((MultiplayerController) InstanceFromId(instanceId)).EnterGame();
+		getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.EnterGame();
 	}
 
 	public void _ConnectionFailed()
@@ -45,16 +82,16 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void RequestToSpawn(Vector2 location, ulong requester)
+	public void RequestToSpawn(Vector2 location)
 	{
-		GD.Print("RequestToSpawn", location, requester);
-		RpcId(1, "RequestToSpawn", location, requester);
+		GD.Print("RequestToSpawn", location);
+		RpcId(1, "RequestToSpawn", location);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void ResponseToSpawn(Vector2 location, ulong requester, int id)
+	public void ResponseToSpawn(Vector2 location, int id)
 	{
-		GD.Print("ResponseToSpawn", location, requester, id);
-		((SpawnController) InstanceFromId(requester)).SpawnPlayer(location, id);
+		GD.Print("ResponseToSpawn", location, id);
+		getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(location, id);
 	}
 }

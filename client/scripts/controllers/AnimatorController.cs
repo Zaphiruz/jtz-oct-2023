@@ -14,15 +14,6 @@ public partial class AnimatorController : Node2D
 
 	public override void _Ready()
 	{
-		animationMap = new Dictionary<ENTITY_STATE, string>()
-		{
-			{ ENTITY_STATE.UP, "Up" },
-			{ ENTITY_STATE.LEFT, "Left" },
-			{ ENTITY_STATE.DOWN, "Down" },
-			{ ENTITY_STATE.RIGHT, "Right" },
-			{ ENTITY_STATE.DEAD, "Die" },
-		};
-
 		sprite = GetNode<Sprite2D>("Sprite2D");
 		sprite.Texture = texture;
 		animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");

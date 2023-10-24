@@ -49,16 +49,16 @@ public partial class ServerController : Node
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void RequestToSpawn(Vector2 location, ulong requester)
+	public void RequestToSpawn(Vector2 location)
 	{
-		GD.Print("RequestToSpawn", location, requester);
-		ResponseToSpawn(location, requester, multiplayer.GetRemoteSenderId());
+		GD.Print("RequestToSpawn", location);
+		ResponseToSpawn(location, multiplayer.GetRemoteSenderId());
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void ResponseToSpawn(Vector2 location, ulong requester, int id)
+	public void ResponseToSpawn(Vector2 location, int id)
 	{
-		GD.Print("ResponseToSpawn", location, requester, id);
-		RpcId(0, "ResponseToSpawn", location, requester, id);
+		GD.Print("ResponseToSpawn", location, id);
+		RpcId(0, "ResponseToSpawn", location, id);
 	}
 }

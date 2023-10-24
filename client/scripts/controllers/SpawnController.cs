@@ -5,6 +5,8 @@ using System.Linq;
 
 public partial class SpawnController : Node2D
 {
+	public static string LABEL = "Spawn";
+
 	private Server server;
 
 	private PackedScene PlayerResource;
@@ -13,7 +15,7 @@ public partial class SpawnController : Node2D
 
 	public override void _Ready()
 	{
-		server = Server.GetInstance(this);
+		server = Server.GetInstance(this, SpawnController.LABEL);
 		PlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//Player.tscn");
 		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
@@ -25,7 +27,7 @@ public partial class SpawnController : Node2D
 	private void RequestSpawn()
 	{
 		Array<Node> spawnPoints = GetTree().GetNodesInGroup("PlayerSpawn");
-		server.RequestToSpawn(((Node2D) spawnPoints[0]).GlobalPosition, GetInstanceId());
+		server.RequestToSpawn(((Node2D) spawnPoints[0]).GlobalPosition);
 	}
 
 	public void SpawnPlayer(Vector2 location, int id)
