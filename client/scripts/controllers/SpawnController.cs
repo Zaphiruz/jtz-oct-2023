@@ -5,36 +5,36 @@ using System.Linq;
 
 public partial class SpawnController : Node2D
 {
-	private GameManager gameManager;
+	private Server server;
 
-	private PackedScene CharacterResource;
+	private PackedScene PlayerResource;
+	private PackedScene OtherPlayerResource;
 	private PackedScene EnemiesResource;
 
 	public override void _Ready()
 	{
-		gameManager = GameManager.GetInstance(this);
-		CharacterResource = GD.Load<PackedScene>("res://scene-objects//Entities//Character.tscn");
+		server = Server.GetInstance(this);
+		PlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//Player.tscn");
+		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
-		//SpawnPlayers();
+		
+		RequestSpawn();
 		//SpawnEncounters();
 	}
 
-	public void SpawnPlayers()
+	private void RequestSpawn()
 	{
 		Array<Node> spawnPoints = GetTree().GetNodesInGroup("PlayerSpawn");
-		int index = 0;
-		foreach (Player player in gameManager.getPlayers())
-		{
-			GD.Print("Spawning ", player.id);
-			CharacterBody2D character = (CharacterBody2D) CharacterResource.Instantiate();
-			character.SetMeta("ID", player.id);
-			AddChild(character);
+		server.RequestToSpawn(((Node2D) spawnPoints[0]).GlobalPosition, GetInstanceId());
+	}
 
-			Node2D spawnPoint = (Node2D) spawnPoints.ElementAt(index);
-			character.GlobalPosition = spawnPoint.GlobalPosition;
-
-			index++;
-		}
+	public void SpawnPlayer(Vector2 location, int id)
+	{
+		GD.Print("Spawning ", id);
+		CharacterBody2D character = (CharacterBody2D) (id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
+		character.SetMeta("ID", id);
+		AddChild(character);
+		character.GlobalPosition = location;
 	}
 
 	public void SpawnEncounters()

@@ -3,7 +3,7 @@ using Godot.Collections;
 
 public partial class EntityController : CharacterBody2D, ITriggerable, IAnimateable, INetworkSynced
 {
-	protected AnimatedSprite2D sprite;
+	protected AnimatorController animator;
 	public MultiplayerSynchronizer multiplayerSynchronizer { get; set; }
 	protected GameManager gameManager;
 	public Area2D area2D { get; set; }
@@ -23,7 +23,7 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	{
 		base._Ready();
 
-		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		animator = GetNode<AnimatorController>("PlayerAnimator");
 		multiplayerSynchronizer = GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer");
 		gameManager = GameManager.GetInstance(this);
 		area2D = GetNode<Area2D>("Area2D");
@@ -87,15 +87,13 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 
 	public virtual void Animate(ENTITY_STATE state)
 	{
-		string animation;
-		bool hasAnimation = animationMap.TryGetValue(state, out animation);
-		if (!hasAnimation)
+		if (state == ENTITY_STATE.NONE)
 		{
-			sprite.Stop();
+			animator.Stop();
 		}
 		else
 		{
-			sprite.Play(animation);
+			animator.Play(state);
 		}
 	}
 

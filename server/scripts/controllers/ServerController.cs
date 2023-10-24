@@ -47,4 +47,18 @@ public partial class ServerController : Node
 	{
 		GD.Print(id, " disconnected");
 	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void RequestToSpawn(Vector2 location, ulong requester)
+	{
+		GD.Print("RequestToSpawn", location, requester);
+		ResponseToSpawn(location, requester, multiplayer.GetRemoteSenderId());
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void ResponseToSpawn(Vector2 location, ulong requester, int id)
+	{
+		GD.Print("ResponseToSpawn", location, requester, id);
+		RpcId(0, "ResponseToSpawn", location, requester, id);
+	}
 }

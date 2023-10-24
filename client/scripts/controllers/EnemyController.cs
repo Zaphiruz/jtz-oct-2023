@@ -7,15 +7,6 @@ public partial class EnemyController : EntityController
 	{
 		base._Ready();
 
-		animationMap = new Dictionary<ENTITY_STATE, string>()
-		{
-			{ ENTITY_STATE.UP, "Up" },
-			{ ENTITY_STATE.LEFT, "Left" },
-			{ ENTITY_STATE.DOWN, "Down" },
-			{ ENTITY_STATE.RIGHT, "Right" },
-			{ ENTITY_STATE.DEAD, "Die" },
-		};
-
 		transformMap = new Dictionary<ENTITY_STATE, Vector2>()
 		{
 			{ ENTITY_STATE.NONE, Vector2.Zero },

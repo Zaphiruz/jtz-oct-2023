@@ -13,17 +13,9 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public MultiplayerApi multiplayer { get; private set; }
 	private ENetMultiplayerPeer client;
 
-	public override void _Ready()
+	public Error ConnectToServer(ulong instanceId)
 	{
-		base._Ready();
 		client = new ENetMultiplayerPeer();
-		multiplayer = GetTree().GetMultiplayer();
-		multiplayer.ConnectedToServer += _ConnectedToServer;
-		multiplayer.ConnectionFailed += _ConnectionFailed;
-	}
-
-	public Error ConnectToServer()
-	{
 		
 		Error error = client.CreateClient(ADDRESS, PORT);
 		if (error != Error.Ok)
@@ -32,19 +24,37 @@ public partial class Server : Node, IGlobalInterface<Server>
 		} else
 		{
 			GD.Print("client created");
+			multiplayer = GetTree().GetMultiplayer();
+			multiplayer.ConnectedToServer += () => _ConnectedToServer(instanceId);
+			multiplayer.ConnectionFailed += _ConnectionFailed;
 			multiplayer.MultiplayerPeer = client;
 		}
 
 		return error;
 	}
 
-	public void _ConnectedToServer()
+	public void _ConnectedToServer(ulong instanceId)
 	{
 		GD.Print("connected to server");
+		((MultiplayerController) InstanceFromId(instanceId)).EnterGame();
 	}
 
 	public void _ConnectionFailed()
 	{
 		GD.Print("failed to connect to server");
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void RequestToSpawn(Vector2 location, ulong requester)
+	{
+		GD.Print("RequestToSpawn", location, requester);
+		RpcId(1, "RequestToSpawn", location, requester);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void ResponseToSpawn(Vector2 location, ulong requester, int id)
+	{
+		GD.Print("ResponseToSpawn", location, requester, id);
+		((SpawnController) InstanceFromId(requester)).SpawnPlayer(location, id);
 	}
 }

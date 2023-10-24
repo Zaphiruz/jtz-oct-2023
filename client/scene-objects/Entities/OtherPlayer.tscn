@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3 uid="uid://b5c3bmlfhm1nh"]
+
+[ext_resource type="Script" path="res://scripts/controllers/OtherPlayerController.cs" id="1_updmx"]
+[ext_resource type="PackedScene" uid="uid://4qe0uy0fd0ud" path="res://scene-objects/Animations/AnimatorController.tscn" id="2_4ifwd"]
+[ext_resource type="Texture2D" uid="uid://ds1ew60rdv1jq" path="res://assets/Characters/Character_119.png" id="3_70smo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mhjmn"]
+size = Vector2(14, 19)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tdf8j"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:state")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vqwvr"]
+size = Vector2(16, 21)
+
+[node name="OtherPlayer" type="CharacterBody2D"]
+collision_mask = 15
+motion_mode = 1
+script = ExtResource("1_updmx")
+metadata/ID = 0
+
+[node name="AnimatorController" parent="." instance=ExtResource("2_4ifwd")]
+texture = ExtResource("3_70smo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_mhjmn")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.17
+delta_interval = 0.17
+replication_config = SubResource("SceneReplicationConfig_tdf8j")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_vqwvr")
+debug_color = Color(0.635294, 0.341176, 1, 0.192157)

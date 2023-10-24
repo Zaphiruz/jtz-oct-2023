@@ -37,20 +37,23 @@ public partial class MultiplayerController : Control
 		passwordLineEdit.Editable = false;
 
 		// Error error = gateway.ConnectToServer(userName, password);
-		Error error = server.ConnectToServer();
+		Error error = server.ConnectToServer(GetInstanceId());
 		if (error == Error.Ok)
 		{
 			userNameLineEdit.Text = userName = "";
 			passwordLineEdit.Text = password = "";
-
-			GD.Print("Starting Game!");
-			sceneManager.ShowScene(SceneManager.SCENES.TEST_2_PLAYER, this);
 		} else
 		{
 			startGameButton.Disabled = false;
 			userNameLineEdit.Editable = true;
 			passwordLineEdit.Editable = true;
 		}
+	}
+
+	public void EnterGame()
+	{
+		GD.Print("Starting Game!");
+		sceneManager.ShowScene(SceneManager.SCENES.TEST_2_PLAYER, this);
 	}
 
 	public void onStartGameButtonDown()
