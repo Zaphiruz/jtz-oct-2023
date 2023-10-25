@@ -94,4 +94,23 @@ public partial class Server : Node, IGlobalInterface<Server>
 		GD.Print("ResponseToSpawn", location, id);
 		getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(location, id);
 	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+	public void UpdatePlayerPosition(Vector2 position)
+	{
+		RpcId(1, "UpdatePlayerPosition", position);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void UpdateEntities(Dictionary<int, Vector2> players)
+	{
+		players.Remove(multiplayer.GetUniqueId());
+		getInstanceOf<SpawnController>(SpawnController.LABEL)?.UpdateEntities(players);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void RemoveEntity(int id)
+	{
+		getInstanceOf<SpawnController>(SpawnController.LABEL)?.RemoveEntity(id);
+	}
 }

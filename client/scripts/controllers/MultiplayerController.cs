@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public partial class MultiplayerController : Control
+public partial class MultiplayerController : Control, IInstanceMappable
 {
 	public static string LABEL = "Multiplayer";
 

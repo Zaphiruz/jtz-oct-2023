@@ -4,7 +4,6 @@ using Godot.Collections;
 public partial class EntityController : CharacterBody2D, ITriggerable, IAnimateable
 {
 	protected AnimatorController animator;
-	protected GameManager gameManager;
 	public Area2D area2D { get; set; }
 	public Dictionary<ENTITY_STATE, string> animationMap { get; set; }
 	protected Dictionary<ENTITY_STATE, Vector2> transformMap;
@@ -23,7 +22,6 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		base._Ready();
 
 		animator = GetNode<AnimatorController>("AnimatorController");
-		gameManager = GameManager.GetInstance(this);
 		area2D = GetNode<Area2D>("Area2D");
 		area2D.AreaEntered += OnAreaEntered;
 
@@ -75,10 +73,34 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		}
 	}
 
-	public virtual void SyncState()
+	public virtual void SyncState(Vector2 position)
 	{
-		// GlobalPosition = GlobalPosition.Lerp(position, .1f);
-		// Animate(state);
+		GlobalPosition = GlobalPosition.Lerp(position, .1f);
+		state = DerriveState(position);
+		Animate(state);
+	}
+
+	public virtual ENTITY_STATE DerriveState(Vector2 position)
+	{
+		Vector2 normal = position.Normalized();
+		if (normal == Vector2.Up)
+		{
+			return ENTITY_STATE.UP;
+		} else if (normal == Vector2.Right)
+		{
+			return ENTITY_STATE.RIGHT;
+		} else if (normal == Vector2.Left)
+		{
+			return ENTITY_STATE.LEFT;
+		} else if (normal == Vector2.Down)
+		{
+			return ENTITY_STATE.DOWN;
+		} else if (normal ==  Vector2.Zero)
+		{
+			return ENTITY_STATE.NONE;
+		}
+
+		return ENTITY_STATE.NONE;
 	}
 
 	public virtual void ClientMove() { }

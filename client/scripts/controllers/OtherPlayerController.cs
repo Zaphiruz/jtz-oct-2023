@@ -16,11 +16,4 @@ public partial class OtherPlayerController : EntityController
 			{ ENTITY_STATE.RIGHT, "RIGHT" },
 		};
 	}
-
-	public override void _Process(double delta)
-	{
-		base._Process(delta);
-
-		SyncState();
-	}
 }

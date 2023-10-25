@@ -3,7 +3,7 @@ using Godot.Collections;
 using System;
 using System.Linq;
 
-public partial class SpawnController : Node2D
+public partial class SpawnController : Node2D, IInstanceMappable
 {
 	public static string LABEL = "Spawn";
 
@@ -13,6 +13,8 @@ public partial class SpawnController : Node2D
 	private PackedScene OtherPlayerResource;
 	private PackedScene EnemiesResource;
 
+	private Dictionary<int, CharacterBody2D> entityDictionary;
+
 	public override void _Ready()
 	{
 		server = Server.GetInstance(this, SpawnController.LABEL);
@@ -20,6 +22,8 @@ public partial class SpawnController : Node2D
 		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
 		
+		entityDictionary = new Dictionary<int, CharacterBody2D>();
+
 		RequestSpawn();
 		//SpawnEncounters();
 	}
@@ -33,19 +37,58 @@ public partial class SpawnController : Node2D
 	public void SpawnPlayer(Vector2 location, int id)
 	{
 		GD.Print("Spawning ", id);
+
+		if (entityDictionary.ContainsKey(id)) return;
+		
 		CharacterBody2D character = (CharacterBody2D) (id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
 		character.SetMeta("ID", id);
 		AddChild(character);
 		character.GlobalPosition = location;
+
+		entityDictionary.Add(id, character);
 	}
 
-	public void SpawnEncounters()
-	{
-		Array<Node> spawnPoints = GetTree().GetNodesInGroup("EncounterSpawn");
-		Node2D spawnPoint = (Node2D) spawnPoints.First();
+	// public void SpawnEncounters()
+	// {
+	// 	Array<Node> spawnPoints = GetTree().GetNodesInGroup("EncounterSpawn");
+	// 	Node2D spawnPoint = (Node2D) spawnPoints.First();
+	// 
+	// 	CharacterBody2D enemy = (CharacterBody2D) EnemiesResource.Instantiate();
+	// 	AddChild(enemy);
+	// 	enemy.GlobalPosition = spawnPoint.GlobalPosition;
+	// }
 
-		CharacterBody2D enemy = (CharacterBody2D) EnemiesResource.Instantiate();
-		AddChild(enemy);
-		enemy.GlobalPosition = spawnPoint.GlobalPosition;
+	public void UpdateEntities(Dictionary<int, Vector2> otherPlayers)
+	{
+		foreach (System.Collections.Generic.KeyValuePair<int, Vector2> data in otherPlayers)
+		{
+			UpdateEntity(data.Key, data.Value);
+		}
+	}
+
+	public void UpdateEntity(int id, Vector2 pos)
+	{
+		CharacterBody2D match = FindEntity(id);
+			if (match != null)
+			{
+				((EntityController) match).SyncState(pos);
+			} else
+			{
+				SpawnPlayer(pos, id);
+			}
+	}
+
+	public void RemoveEntity(int id)
+	{
+		CharacterBody2D character = FindEntity(id);
+		character?.QueueFree();
+		entityDictionary.Remove(id);
+	}
+
+	public CharacterBody2D FindEntity(int id)
+	{
+		CharacterBody2D character = null;
+		entityDictionary.TryGetValue(id, out character);
+		return character;
 	}
 }

@@ -15,6 +15,14 @@ run/main_scene="res://scenes/Server.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameManager="*res://scripts/managers/GameManager.cs"
+
 [dotnet]
 
 project/assembly_name="Server"
+
+[physics]
+
+common/physics_ticks_per_second=20

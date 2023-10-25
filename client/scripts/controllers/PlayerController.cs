@@ -1,10 +1,13 @@
 using Godot;
 using Godot.Collections;
 
-public partial class PlayerController : EntityController
+public partial class PlayerController : EntityController, IInstanceMappable
 {
+	public static string LABEL = "player";
+
 	protected Dictionary<ENTITY_STATE, string> actionMap;
 	protected SceneManager sceneManager;
+	protected Server server;
 	protected InputCacher inputCache;
 	protected System.Collections.Generic.Stack<ENTITY_STATE> inputStack;
 	public override void _Ready()
@@ -12,6 +15,7 @@ public partial class PlayerController : EntityController
 		base._Ready();
 
 		sceneManager = SceneManager.GetInstance(this);
+		server = Server.GetInstance(this, PlayerController.LABEL);
 
 		actionMap = new Dictionary<ENTITY_STATE, string>()
 		{
@@ -31,6 +35,8 @@ public partial class PlayerController : EntityController
 
 		ClientMove();
 		inputCache.clearCache();
+
+		server.UpdatePlayerPosition(GlobalPosition);
 	}
 
 	public override void ClientMove() {
@@ -74,31 +80,4 @@ public partial class PlayerController : EntityController
 	// 	GD.Print("Starting Battle!");
 	// 	sceneManager.ShowScene(SceneManager.SCENES.TEST_BATTLE, this);
 	// }
-}
-
-public class InputCacher {
-	private Dictionary<StringName, bool> pressCache;
-
-	public InputCacher()
-	{
-		pressCache = new Dictionary<StringName, bool>();
-	}
-
-	public void clearCache()
-	{
-		pressCache.Clear();
-	}
-
-	public bool checkInputPress(StringName action)
-	{
-		bool value;
-		bool success = pressCache.TryGetValue(action, out value);
-		if (success)
-			return value;
-
-		value = Input.IsActionPressed(action);
-		pressCache.Add(action, value);
-
-		return value;
-	}
 }

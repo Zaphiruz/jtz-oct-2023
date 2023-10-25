@@ -17,11 +17,4 @@ public partial class EnemyController : EntityController
 			{ ENTITY_STATE.DEAD, Vector2.Zero },
 		};
 	}
-
-	public override void _Process(double delta)
-	{
-		base._Process(delta);
-
-		SyncState();
-	}
 }
