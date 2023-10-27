@@ -12,7 +12,7 @@ import { LoginRequest } from '../models/login.request';
 // import { ConfirmPasswordRequest } from '../models/confirm-password.request';
 // import { VerifyUserRequest } from '../models/verify-user.request';
 import { DeleteUserRequest } from '../models/delete-user.request';
-import { ChallengeUserRequest } from 'src/models/challenge-user.request';
+import { ChallengeUserRequest } from '../models/challenge-user.request';
 import {
   AdminDeleteUserCommand,
   CognitoIdentityProviderClient,
@@ -24,9 +24,13 @@ import {
   RespondToAuthChallengeCommand,
   RespondToAuthChallengeCommandInput,
   RespondToAuthChallengeResponse,
+  GetUserCommand,
+  GetUserCommandInput,
+  GetUserCommandOutput,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { ConfigService } from '@nestjs/config';
+import { GetUserRequest } from 'src/models/get-user.request';
 
 @Injectable()
 export class AwsCognitoAuthService {
@@ -83,6 +87,15 @@ export class AwsCognitoAuthService {
       Session,
     };
     const command = new RespondToAuthChallengeCommand(input);
+    return this.providerClient.send(command);
+  }
+
+  async getUser(getUserRequest: GetUserRequest): Promise<GetUserCommandOutput> {
+    const { accessToken: AccessToken } = getUserRequest;
+    const input: GetUserCommandInput = {
+      AccessToken,
+    };
+    const command = new GetUserCommand(input);
     return this.providerClient.send(command);
   }
 
