@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 SceneManager="*res://scripts/managers/SceneManager.cs"
 DataManager="*res://scripts/managers/DataManager.cs"
 Server="*res://scripts/managers/Server.cs"
+AuthManager="*res://scripts/managers/AuthManager.cs"
+SceneMapper="*res://scripts/managers/SceneMapper.cs"
 
 [display]
 
