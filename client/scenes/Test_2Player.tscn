@@ -6,6 +6,7 @@
 
 [node name="Test_2Player" type="Node2D"]
 script = ExtResource("1_ohlte")
+metadata/ID = "0001"
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("2_lu1iy")
@@ -54,37 +55,6 @@ layer_6/y_sort_enabled = false
 layer_6/y_sort_origin = 0
 layer_6/z_index = 0
 layer_6/tile_data = PackedInt32Array()
-
-[node name="PlayerSpawnPoints" type="Node2D" parent="."]
-
-[node name="0" type="Node2D" parent="PlayerSpawnPoints" groups=["PlayerSpawn"]]
-position = Vector2(563, 529)
-
-[node name="1" type="Node2D" parent="PlayerSpawnPoints" groups=["PlayerSpawn"]]
-position = Vector2(593, 529)
-
-[node name="2" type="Node2D" parent="PlayerSpawnPoints" groups=["PlayerSpawn"]]
-position = Vector2(561, 561)
-
-[node name="3" type="Node2D" parent="PlayerSpawnPoints" groups=["PlayerSpawn"]]
-position = Vector2(590, 561)
-
-[node name="EncounterSpawnPoints" type="Node2D" parent="."]
-
-[node name="0" type="Node2D" parent="EncounterSpawnPoints" groups=["EncounterSpawn"]]
-position = Vector2(237, 145)
-
-[node name="1" type="Node2D" parent="EncounterSpawnPoints" groups=["EncounterSpawn"]]
-position = Vector2(209, 497)
-
-[node name="2" type="Node2D" parent="EncounterSpawnPoints" groups=["EncounterSpawn"]]
-position = Vector2(580, 277)
-
-[node name="3" type="Node2D" parent="EncounterSpawnPoints" groups=["EncounterSpawn"]]
-position = Vector2(1003, 497)
-
-[node name="4" type="Node2D" parent="EncounterSpawnPoints" groups=["EncounterSpawn"]]
-position = Vector2(978, 114)
 
 [node name="Triggers" type="Node2D" parent="."]
 

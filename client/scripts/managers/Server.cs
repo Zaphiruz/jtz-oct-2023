@@ -61,10 +61,10 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void RequestToSpawn(Vector2 location)
+	public void RequestToSpawn(string mapId)
 	{
-		GD.Print("RequestToSpawn", location);
-		RpcId(1, "RequestToSpawn", location);
+		GD.Print("RequestToSpawn", mapId);
+		RpcId(1, "RequestToSpawn", mapId);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]

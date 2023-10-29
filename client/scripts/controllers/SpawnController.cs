@@ -14,6 +14,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	private PackedScene EnemiesResource;
 
 	private Dictionary<int, CharacterBody2D> entityDictionary;
+	private string mapId;
 
 	public override void _Ready()
 	{
@@ -23,15 +24,15 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
 		
 		entityDictionary = new Dictionary<int, CharacterBody2D>();
+		mapId = GetMeta("ID").As<string>();
 
-		RequestSpawn();
+		RequestSpawn(mapId);
 		//SpawnEncounters();
 	}
 
-	private void RequestSpawn()
+	private void RequestSpawn(string mapId)
 	{
-		Array<Node> spawnPoints = GetTree().GetNodesInGroup("PlayerSpawn");
-		server.RequestToSpawn(((Node2D) spawnPoints[0]).GlobalPosition);
+		server.RequestToSpawn(mapId);
 	}
 
 	public void SpawnPlayer(Vector2 location, int id)
@@ -47,16 +48,6 @@ public partial class SpawnController : Node2D, IInstanceMappable
 
 		entityDictionary.Add(id, character);
 	}
-
-	// public void SpawnEncounters()
-	// {
-	// 	Array<Node> spawnPoints = GetTree().GetNodesInGroup("EncounterSpawn");
-	// 	Node2D spawnPoint = (Node2D) spawnPoints.First();
-	// 
-	// 	CharacterBody2D enemy = (CharacterBody2D) EnemiesResource.Instantiate();
-	// 	AddChild(enemy);
-	// 	enemy.GlobalPosition = spawnPoint.GlobalPosition;
-	// }
 
 	public void UpdateEntities(Dictionary<int, Vector2> otherPlayers)
 	{

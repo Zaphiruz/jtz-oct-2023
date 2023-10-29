@@ -13,12 +13,14 @@ public partial class ServerController : Node
 	private ENetMultiplayerPeer network;
 	private MultiplayerApi multiplayer;
 	private GameManager gameManager;
+	private MapDataManager mapDataManager;
 
 	public override void _Ready()
 	{
 		base._Ready();
 
 		gameManager = GameManager.GetInstance(this);
+		mapDataManager = MapDataManager.GetInstance(this);
 
 		StartServer();
 	}
@@ -73,10 +75,12 @@ public partial class ServerController : Node
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void RequestToSpawn(Vector2 location)
+	public void RequestToSpawn(string mapId)
 	{
-		GD.Print("RequestToSpawn", location);
-		ResponseToSpawn(location, multiplayer.GetRemoteSenderId());
+		int playerId = multiplayer.GetRemoteSenderId();
+		GD.Print("RequestToSpawn", playerId, mapId);
+		Vector2 location = mapDataManager.GetMapSpawnLocation(mapId, SPAWN_POINT_TYPE.PLAYER);
+		ResponseToSpawn(location, playerId);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
