@@ -5,14 +5,14 @@ import { ConfigModule } from '@nestjs/config';
 import AwsConfig from '../configs/aws-congito-auth.config';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [AwsConfig],
-    }),
-  ],
-  controllers: [AwsController],
-  providers: [AwsCognitoAuthService],
-  exports: [AwsCognitoAuthService],
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true,
+			load: [AwsConfig],
+		}),
+	],
+	controllers: [AwsController],
+	providers: [AwsCognitoAuthService],
+	exports: [AwsCognitoAuthService],
 })
 export class AwsModule {}

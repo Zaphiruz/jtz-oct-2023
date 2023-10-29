@@ -45,7 +45,15 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 
 	private void SignInResponce(long result, long responseCode, string[] headers, byte[] body)
 	{
+		RequestCompleted -= SignInResponce;
+
 		Dictionary json = Json.ParseString(Encoding.UTF8.GetString(body)).AsGodotDictionary();
+
+		if(parseErrors(json))
+		{
+			sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.SignInError(json["name"].As<string>());
+			return;
+		}
 
 		this.session = json["Session"].As<string>();
 
@@ -53,8 +61,6 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 		{
 			parseAuthenticationResult(json);
 		}
-
-		RequestCompleted -= SignInResponce;
 	}
 
 
@@ -77,14 +83,25 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 
 	private void AnswerChallengeResponse(long result, long responseCode, string[] headers, byte[] body)
 	{
+		RequestCompleted -= AnswerChallengeResponse;
+
 		Dictionary json = Json.ParseString(Encoding.UTF8.GetString(body)).AsGodotDictionary();
+
+		if (parseErrors(json))
+		{
+			sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.MfaError(json["name"].As<string>());
+			return;
+		}
 
 		if (!parseChallenges(json))
 		{
 			parseAuthenticationResult(json);
 		}
+	}
 
-		RequestCompleted -= AnswerChallengeResponse;
+	public bool parseErrors(Dictionary json)
+	{
+		return json.ContainsKey("$fault");
 	}
 
 	public bool parseChallenges(Dictionary json)
@@ -101,7 +118,7 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 		switch (ChallengeName)
 		{
 			case "SOFTWARE_TOKEN_MFA":
-				sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.ShowMfa();
+				sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.MfaChallenge();
 				return true;
 
 			default:

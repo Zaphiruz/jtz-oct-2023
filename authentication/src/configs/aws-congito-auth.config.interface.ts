@@ -1,5 +1,5 @@
 export interface AwsCognitoAuthConfig {
-  userPoolId: string;
-  clientId: string;
-  region: string;
+	userPoolId: string;
+	clientId: string;
+	region: string;
 }

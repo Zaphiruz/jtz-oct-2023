@@ -1,3 +1,3 @@
 export class GetUserRequest {
-  accessToken: string;
+	accessToken: string;
 }

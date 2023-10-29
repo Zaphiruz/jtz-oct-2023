@@ -1,5 +1,5 @@
 export class ConfirmPasswordRequest {
-  email: string;
-  verificationCode: string;
-  newPassword: string;
+	email: string;
+	verificationCode: string;
+	newPassword: string;
 }

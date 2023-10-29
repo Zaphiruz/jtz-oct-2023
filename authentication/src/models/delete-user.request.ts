@@ -1,3 +1,3 @@
 export class DeleteUserRequest {
-  username: string;
+	username: string;
 }

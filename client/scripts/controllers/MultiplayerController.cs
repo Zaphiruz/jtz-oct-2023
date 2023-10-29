@@ -22,6 +22,8 @@ public partial class MultiplayerController : Control, IInstanceMappable
 	private string userName;
 	private string password;
 	private string mfaToken;
+	private Label signInError;
+	private Label mfaError;
 
 	public override void _Ready()
 	{
@@ -46,37 +48,68 @@ public partial class MultiplayerController : Control, IInstanceMappable
 		mfaButton.Disabled = true;
 		mfaControl = GetNode<Control>("Control");
 		mfaControl.Visible = false;
+
+		signInError = GetNode<Label>("VBoxContainer/MarginContainer/VBoxContainer/SignInError");
+		mfaError = GetNode<Label>("Control/MarginContainer/VBoxContainer/MfaError");
+	}
+
+	public void Reset()
+	{
+		HideUserPass();
+		HideMfa();
+
+		ShowUserPass();
 	}
 
 	public void FullyAuthenticated()
 	{
-		userNameLineEdit.Editable = false;
-		passwordLineEdit.Editable = false;
-		mfaControl.Visible = false;
+		HideMfa();
+		HideUserPass();
 
 		Error error = server.ConnectToServer();
-		if (error == Error.Ok)
+		if (error != Error.Ok)
 		{
-			userNameLineEdit.Text = userName = "";
-			passwordLineEdit.Text = password = "";
-			mfaTokenEdit.Text = mfaToken = "";
-
-		} else
-		{
-			startGameButton.Disabled = false;
-			userNameLineEdit.Editable = true;
-			passwordLineEdit.Editable = true;
+			ShowUserPass();
 		}
+	}
+
+	public void MfaChallenge()
+	{
+		HideUserPass();
+		ShowMfa();
 	}
 
 	public void ShowMfa()
 	{
+		mfaControl.Visible = true;
+		mfaTokenEdit.Editable = true;
+
+		mfaTokenEdit.Text = mfaToken = "";
+	}
+
+	public void HideMfa()
+	{
+		mfaControl.Visible = false;
+		mfaTokenEdit.Editable = false;
+
+		mfaError.Visible = false;
+	}
+
+	public void ShowUserPass()
+	{
+		userNameLineEdit.Editable = true;
+		passwordLineEdit.Editable = true;
+		startGameButton.Disabled = true;
+
+		passwordLineEdit.Text = password = "";
+	}
+
+	public void HideUserPass()
+	{
 		userNameLineEdit.Editable = false;
 		passwordLineEdit.Editable = false;
 		startGameButton.Disabled = true;
-
-		mfaControl.Visible = true;
-		mfaTokenEdit.Editable = true;
+		signInError.Visible = false;
 	}
 
 	public void submitMfa()
@@ -85,12 +118,25 @@ public partial class MultiplayerController : Control, IInstanceMappable
 		mfaTokenEdit.Editable = false;
 	}
 
+	public void MfaError(string message)
+	{
+		ShowMfa();
+		mfaError.Text = $"Error: {message}";
+		mfaError.Visible = true;
+	}
+
 	public void SignIn()
 	{
-		userNameLineEdit.Editable = false;
-		passwordLineEdit.Editable = false;
+		HideUserPass();
 
 		authManager.SignIn(this.userName, this.password);
+	}
+
+	public void SignInError(string message)
+	{
+		ShowUserPass();
+		signInError.Text = $"Error: {message}";
+		signInError.Visible = true;
 	}
 
 	public void EnterGame()

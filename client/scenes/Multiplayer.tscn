@@ -82,6 +82,16 @@ layout_mode = 2
 placeholder_text = "Type Password Here"
 secret = true
 
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SignInError" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+theme_override_colors/font_color = Color(1, 0.301961, 0.235294, 1)
+
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 64
@@ -155,6 +165,14 @@ placeholder_text = "MFA Code"
 layout_mode = 2
 theme_override_constants/separation = 12
 
+[node name="MfaError" type="Label" parent="Control/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+theme_override_colors/font_color = Color(1, 0.301961, 0.235294, 1)
+text = "ERROR"
+
 [node name="MfaSubmit" type="Button" parent="Control/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/h_separation = 12
 text = "Submit"

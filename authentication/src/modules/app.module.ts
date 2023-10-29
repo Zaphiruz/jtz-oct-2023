@@ -4,8 +4,8 @@ import { AppService } from '../services/app.service';
 import { AwsModule } from './aws.module';
 
 @Module({
-  imports: [AwsModule],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [AwsModule],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}

@@ -1,3 +1,3 @@
 export class ForgotPasswordRequest {
-  email: string;
+	email: string;
 }
