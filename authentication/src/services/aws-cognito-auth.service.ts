@@ -11,10 +11,11 @@ import { LoginRequest } from '../models/login.request';
 // import { ForgotPasswordRequest } from '../models/forgot-password.request';
 // import { ConfirmPasswordRequest } from '../models/confirm-password.request';
 // import { VerifyUserRequest } from '../models/verify-user.request';
-import { DeleteUserRequest } from '../models/delete-user.request';
+// import { DeleteUserRequest } from '../models/delete-user.request';
 import { ChallengeUserRequest } from '../models/challenge-user.request';
+import { VerifyTokenRequest } from '../models/verify-token.requests';
 import {
-	AdminDeleteUserCommand,
+	// AdminDeleteUserCommand,
 	CognitoIdentityProviderClient,
 	// GetUserCommand,
 	// ChangePasswordCommand,
@@ -32,10 +33,19 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { GetUserRequest } from 'src/models/get-user.request';
 
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
+
+import {
+	CognitoJwtVerifierSingleUserPool,
+	CognitoJwtVerifierProperties,
+	CognitoVerifyProperties,
+} from 'aws-jwt-verify/cognito-verifier';
+
 @Injectable()
 export class AwsCognitoAuthService {
 	private readonly providerClient: CognitoIdentityProviderClient;
 	private readonly awsConfig: AwsCognitoAuthConfig;
+	private readonly awsVerifier: CognitoJwtVerifierSingleUserPool<CognitoJwtVerifierProperties>;
 
 	constructor(private readonly configService: ConfigService) {
 		this.awsConfig = configService.get<AwsCognitoAuthConfig>(
@@ -44,6 +54,13 @@ export class AwsCognitoAuthService {
 
 		this.providerClient = new CognitoIdentityProviderClient({
 			region: this.awsConfig.region,
+		});
+
+		this.awsVerifier = CognitoJwtVerifier.create({
+			userPoolId: this.awsConfig.userPoolId,
+			clientId: this.awsConfig.clientId,
+			tokenUse: null,
+			groups: ['Admin', 'Developer', 'VIP', 'Moderator'],
 		});
 	}
 
@@ -105,14 +122,26 @@ export class AwsCognitoAuthService {
 			.catch((error) => (console.error(error), error));
 	}
 
-	async deleteUser(deleteUserRequest: DeleteUserRequest) {
-		const input = {
-			Username: deleteUserRequest.username,
-			UserPoolId: this.awsConfig.userPoolId,
-		};
-		const command = new AdminDeleteUserCommand(input);
-		return this.providerClient
-			.send(command)
-			.catch((error) => (console.error(error), error));
+	// async deleteUser(deleteUserRequest: DeleteUserRequest) {
+	// 	const input = {
+	// 		Username: deleteUserRequest.username,
+	// 		UserPoolId: this.awsConfig.userPoolId,
+	// 	};
+	// 	const command = new AdminDeleteUserCommand(input);
+	// 	return this.providerClient
+	// 		.send(command)
+	// 		.catch((error) => (console.error(error), error));
+	// }
+
+	async verifyToken(verifyTokenRequest: VerifyTokenRequest): Promise<any> {
+		const optinals: Partial<CognitoVerifyProperties> = {};
+		if (verifyTokenRequest.tokenUse) {
+			optinals.tokenUse = verifyTokenRequest.tokenUse;
+		}
+		if (verifyTokenRequest.tokenUse) {
+			optinals.groups = verifyTokenRequest.groups;
+		}
+
+		return this.awsVerifier.verify(verifyTokenRequest.token);
 	}
 }

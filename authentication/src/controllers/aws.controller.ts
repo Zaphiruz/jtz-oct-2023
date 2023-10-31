@@ -8,7 +8,8 @@ import {
 
 import { LoginRequest } from '../models/login.request';
 import { ChallengeUserRequest } from '../models/challenge-user.request';
-import { GetUserRequest } from 'src/models/get-user.request';
+import { GetUserRequest } from '../models/get-user.request';
+import { VerifyTokenRequest } from '../models/verify-token.requests';
 
 @Controller('aws')
 export class AwsController {
@@ -33,5 +34,12 @@ export class AwsController {
 		@Body() getUserRequest: GetUserRequest,
 	): Promise<GetUserCommandOutput> {
 		return this.awsService.getUser(getUserRequest);
+	}
+
+	@Post('verifyToken')
+	async verifyToken(
+		@Body() verifyTokenRequest: VerifyTokenRequest,
+	): Promise<any> {
+		return this.awsService.verifyToken(verifyTokenRequest);
 	}
 }
