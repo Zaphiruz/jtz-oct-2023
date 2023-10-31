@@ -1,8 +1,6 @@
 using Godot;
 using Godot.Collections;
 
-
-
 public partial class Server : Node, IGlobalInterface<Server>
 {
 	public static string NodePath = "/root/Server";
@@ -18,6 +16,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public int PORT = 8910;
 
 	SceneMapper sceneMapper;
+	AuthManager authManager;
 	public MultiplayerApi multiplayer { get; private set; }
 	private ENetMultiplayerPeer client;
 
@@ -25,6 +24,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 		base._Ready();
 		
 		sceneMapper = SceneMapper.GetInstance(this);
+		authManager = AuthManager.GetInstance(this);
 	}
 
 	public Error ConnectToServer()
@@ -51,8 +51,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public void _ConnectedToServer()
 	{
 		GD.Print("connected to server");
-
-		sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.EnterGame();
+		ClientRegisterRequest(authManager.GetAccessToken());
 	}
 
 	public void _ConnectionFailed()
@@ -68,6 +67,21 @@ public partial class Server : Node, IGlobalInterface<Server>
 		sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.ConnectionFailed("disconnected from server");
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void ClientRegisterRequest(string accessToken)
+	{
+		RpcId(MultiplayerPeer.TargetPeerServer, "ClientRegisterRequest", accessToken);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void ClientRegisterResponse(bool isOk)
+	{
+		if (isOk)
+		{
+			sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.EnterGame();
+		}
+	}
+
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
 	public void RequestToSpawn(string mapId)
 	{
@@ -76,10 +90,10 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void ResponseToSpawn(Vector2 location, int id)
+	public void ResponseToSpawn(Vector2 location, int id, string name)
 	{
-		GD.Print("ResponseToSpawn", location, id);
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(location, id);
+		GD.Print("ResponseToSpawn", location, id, name);
+		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(location, id, name);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
@@ -89,7 +103,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
-	public void UpdateEntities(Dictionary<int, Vector2> players)
+	public void UpdateEntities(Dictionary<int, Array<Variant>> players)
 	{
 		players.Remove(multiplayer.GetUniqueId());
 		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.UpdateEntities(players);

@@ -17,6 +17,9 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	[Export]
 	public Vector2 position;
 
+	protected Label nameplate;
+
+
 	public override void _Ready()
 	{
 		base._Ready();
@@ -43,6 +46,9 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		};
 
 		position = GlobalPosition;
+
+		nameplate = GetNode<Label>("Nameplate");
+		nameplate.Text = GetMeta("Name").As<string>();
 	}
 
 	public virtual void Move(ENTITY_STATE state, float speed)

@@ -103,6 +103,19 @@ public partial class GameManager : Node, IGlobalInterface<GameManager>
 		}
 	}
 
+	public Player getPlayer(int id)
+	{
+		Player player;
+		bool success = players.TryGetValue(id, out player);
+		if (success)
+		{
+			return player;
+		} else
+		{
+			return null;
+		}
+	}
+
 	public System.Collections.Generic.ICollection<Player> getPlayers()
 	{
 		return players.Values;

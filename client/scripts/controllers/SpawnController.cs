@@ -43,7 +43,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		server.RequestToSpawn(mapId);
 	}
 
-	public void SpawnPlayer(Vector2 location, int id)
+	public void SpawnPlayer(Vector2 location, int id, string name)
 	{
 		GD.Print("Spawning ", id);
 
@@ -51,29 +51,31 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		
 		CharacterBody2D character = (CharacterBody2D) (id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
 		character.SetMeta("ID", id);
+		character.SetMeta("Name", name ?? "???");
 		AddChild(character);
 		character.GlobalPosition = location;
 
 		entityDictionary.Add(id, character);
 	}
 
-	public void UpdateEntities(Dictionary<int, Vector2> otherPlayers)
+	public void UpdateEntities(Dictionary<int, Array<Variant>> otherPlayers)
 	{
-		foreach (System.Collections.Generic.KeyValuePair<int, Vector2> data in otherPlayers)
+		foreach (System.Collections.Generic.KeyValuePair<int, Array<Variant>> data in otherPlayers)
 		{
-			UpdateEntity(data.Key, data.Value);
+
+			UpdateEntity(data.Key, Player.From(data.Value));
 		}
 	}
 
-	public void UpdateEntity(int id, Vector2 pos)
+	public void UpdateEntity(int id, Player playerData)
 	{
 		CharacterBody2D match = FindEntity(id);
 			if (match != null)
 			{
-				((EntityController) match).SyncState(pos);
+				((EntityController) match).SyncState(playerData.position);
 			} else
 			{
-				SpawnPlayer(pos, id);
+				SpawnPlayer(playerData.position, id, playerData.name);
 			}
 	}
 

@@ -29,6 +29,11 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 		sceneMapper = SceneMapper.GetInstance(this);
 	}
 
+	public string GetAccessToken()
+	{
+		return accessToken;
+	}
+
 	public void SignIn(string username, string password)
 	{
 		this.username = username;
@@ -36,7 +41,7 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 		string url = $"{HOST}/authenticateUser";
 		string json = $"{{\"username\": \"{username}\", \"password\": \"{password}\"}}";
 
-		GD.Print("Sending", url, json);
+		GD.Print("Sending", url);
 
 		string[] headers = new string[] { "Content-Type: application/json" };;
 		RequestCompleted += SignInResponce;
@@ -74,7 +79,7 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 		string url = $"{HOST}/challengeUser";
 		string json = $"{{\"challengeName\": \"{this.challengeName}\", \"challengeResponses\": {{ \"username\": \"{this.username}\", \"authenticator_code\": \"{authenticatorToken}\", \"session\": \"{this.session}\" }} }}";
 
-		GD.Print("Sending", url, json);
+		GD.Print("Sending", url);
 
 		string[] headers = new string[] { "Content-Type: application/json" };
 		RequestCompleted += AnswerChallengeResponse;
