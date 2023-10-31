@@ -41,30 +41,38 @@ public partial class Server : Node, IGlobalInterface<Server>
 			multiplayer = GetTree().GetMultiplayer();
 			multiplayer.ConnectedToServer +=  _ConnectedToServer;
 			multiplayer.ConnectionFailed += _ConnectionFailed;
+			multiplayer.ServerDisconnected += _Disconnected;
 			multiplayer.MultiplayerPeer = client;
 		}
 
 		return error;
 	}
 
-
-
 	public void _ConnectedToServer()
 	{
 		GD.Print("connected to server");
+
 		sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.EnterGame();
 	}
 
 	public void _ConnectionFailed()
 	{
 		GD.Print("failed to connect to server");
+		sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.ConnectionFailed();
+	}
+
+	public void _Disconnected()
+	{
+		GD.Print("disconnected from server");
+		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.DisconnectedFromServer();
+		sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.ConnectionFailed("disconnected from server");
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
 	public void RequestToSpawn(string mapId)
 	{
 		GD.Print("RequestToSpawn", mapId);
-		RpcId(1, "RequestToSpawn", mapId);
+		RpcId(MultiplayerPeer.TargetPeerServer, "RequestToSpawn", mapId);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
@@ -77,7 +85,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
 	public void UpdatePlayerPosition(Vector2 position)
 	{
-		RpcId(1, "UpdatePlayerPosition", position);
+		RpcId(MultiplayerPeer.TargetPeerServer, "UpdatePlayerPosition", position);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]

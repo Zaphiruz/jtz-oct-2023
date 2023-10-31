@@ -24,6 +24,7 @@ public partial class MultiplayerController : Control, IInstanceMappable
 	private string mfaToken;
 	private Label signInError;
 	private Label mfaError;
+	private Label globalError;
 
 	public override void _Ready()
 	{
@@ -51,6 +52,7 @@ public partial class MultiplayerController : Control, IInstanceMappable
 
 		signInError = GetNode<Label>("VBoxContainer/MarginContainer/VBoxContainer/SignInError");
 		mfaError = GetNode<Label>("Control/MarginContainer/VBoxContainer/MfaError");
+		globalError = GetNode<Label>("VBoxContainer/MarginContainer/VBoxContainer/GlobalError");
 	}
 
 	public void Reset()
@@ -59,6 +61,8 @@ public partial class MultiplayerController : Control, IInstanceMappable
 		HideMfa();
 
 		ShowUserPass();
+
+		globalError.Text = "";
 	}
 
 	public void FullyAuthenticated()
@@ -70,6 +74,7 @@ public partial class MultiplayerController : Control, IInstanceMappable
 		if (error != Error.Ok)
 		{
 			ShowUserPass();
+			ConnectionFailed( $"Error creating client, {error}");
 		}
 	}
 
@@ -154,6 +159,17 @@ public partial class MultiplayerController : Control, IInstanceMappable
 	{
 		this.mfaToken = mfaToken;
 		this.mfaButton.Disabled = this.mfaToken == null || this.mfaToken == string.Empty;
+	}
+
+	public void ConnectionFailed()
+	{
+		ConnectionFailed("Connection Failed");
+	}
+
+	public void ConnectionFailed(string message)
+	{
+		Reset();
+		globalError.Text = $"Error: {message}";
 	}
 
 	public void OnUserNameUpdate(string userName)

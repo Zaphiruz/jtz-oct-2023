@@ -8,6 +8,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	public static string LABEL = "Spawn";
 
 	private Server server;
+	private SceneManager sceneManager;
 
 	private PackedScene PlayerResource;
 	private PackedScene OtherPlayerResource;
@@ -19,6 +20,8 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	public override void _Ready()
 	{
 		server = Server.GetInstance(this, SpawnController.LABEL);
+		sceneManager = SceneManager.GetInstance(this);
+
 		PlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//Player.tscn");
 		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
@@ -28,6 +31,11 @@ public partial class SpawnController : Node2D, IInstanceMappable
 
 		RequestSpawn(mapId);
 		//SpawnEncounters();
+	}
+
+	public void DisconnectedFromServer()
+	{
+		sceneManager.ShowScene(SceneManager.SCENES.MULTIPLAYER_LOBBY, this);
 	}
 
 	private void RequestSpawn(string mapId)

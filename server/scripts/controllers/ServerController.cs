@@ -87,7 +87,7 @@ public partial class ServerController : Node
 	public void ResponseToSpawn(Vector2 location, int id)
 	{
 		GD.Print("ResponseToSpawn", location, id);
-		RpcId(0, "ResponseToSpawn", location, id);
+		RpcId(MultiplayerPeer.TargetPeerBroadcast, "ResponseToSpawn", location, id);
 		gameManager.updatePlayer(id, location);
 	}
 
@@ -100,12 +100,12 @@ public partial class ServerController : Node
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
 	public void UpdateEntities(Dictionary<int, Vector2> players)
 	{
-		RpcId(0, "UpdateEntities", players);
+		RpcId(MultiplayerPeer.TargetPeerBroadcast, "UpdateEntities", players);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
 	public void RemoveEntity(int id)
 	{
-		RpcId(0, "RemoveEntity", id);
+		RpcId(MultiplayerPeer.TargetPeerBroadcast, "RemoveEntity", id);
 	}
 }
