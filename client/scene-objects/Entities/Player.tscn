@@ -17,6 +17,8 @@ script = ExtResource("1_1fpw1")
 metadata/ID = 0
 metadata/Name = ""
 
+[node name="Camera2D" type="Camera2D" parent="."]
+
 [node name="Nameplate" type="Label" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
