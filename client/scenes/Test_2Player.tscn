@@ -59,11 +59,11 @@ layer_6/tile_data = PackedInt32Array()
 [node name="Triggers" type="Node2D" parent="."]
 
 [node name="0" parent="Triggers" instance=ExtResource("3_0khqa")]
-position = Vector2(574, 645)
+position = Vector2(574, 625)
 scale = Vector2(2, 1)
 triggerId = "0"
 
 [node name="1" parent="Triggers" instance=ExtResource("3_0khqa")]
-position = Vector2(2464, 613)
+position = Vector2(2465, 591)
 scale = Vector2(2, 1)
 triggerId = "1"
