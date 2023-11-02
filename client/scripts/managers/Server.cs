@@ -114,4 +114,19 @@ public partial class Server : Node, IGlobalInterface<Server>
 	{
 		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.RemoveEntity(id);
 	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void MapTriggerHit(string mapId, string triggerId)
+	{
+		GD.Print("MapTriggerHit", mapId, triggerId);
+		RpcId(MultiplayerPeer.TargetPeerServer, "MapTriggerHit", mapId, triggerId);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void TeleportCharacter(Vector2 destinationPos)
+	{
+		GD.Print("TeleportCharacter", destinationPos);
+		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.TeleportEntity(multiplayer.GetUniqueId(), destinationPos);
+		UpdatePlayerPosition(destinationPos);
+	}
 }

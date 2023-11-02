@@ -12,6 +12,10 @@ enemySpawnPoints = [Vector2(237, 145), Vector2(209, 497), Vector2(580, 277), Vec
 resourceSpawnRate = 250
 resourceSpawnPoint = [Vector2(18, 300), Vector2(1136, 300)]
 connectedMaps = []
+triggers = {
+"0": [Vector2(574, 645), Vector2(2464, 613)],
+"1": [Vector2(2464, 613), Vector2(574, 645)]
+}
 
 [resource]
 script = ExtResource("1_4kict")

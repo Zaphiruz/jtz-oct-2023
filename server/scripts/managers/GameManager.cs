@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System;
 
 public partial class GameManager : Node, IGlobalInterface<GameManager>
 {
@@ -114,6 +115,24 @@ public partial class GameManager : Node, IGlobalInterface<GameManager>
 		{
 			return null;
 		}
+	}
+
+	public void TeleportPlayer(int id, Vector2 position, double when)
+	{
+		Player player;
+		bool success = players.TryGetValue(id, out player);
+		if (success)
+		{
+			TeleportPlayer(player, position, when);
+		}
+	}
+
+	public void TeleportPlayer(Player playerData, Vector2 position, double when)
+	{
+		
+		playerData.position = position;
+		playerData.lastTeleportTime = when;
+		players[playerData.id] = playerData;
 	}
 
 	public System.Collections.Generic.ICollection<Player> getPlayers()

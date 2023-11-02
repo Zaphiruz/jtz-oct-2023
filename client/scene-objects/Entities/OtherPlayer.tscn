@@ -46,7 +46,8 @@ position = Vector2(0, 2.5)
 shape = SubResource("RectangleShape2D_mhjmn")
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_mask = 2
+collision_layer = 2
+collision_mask = 12
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]

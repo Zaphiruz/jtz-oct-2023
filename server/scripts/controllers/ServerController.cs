@@ -141,4 +141,28 @@ public partial class ServerController : Node, IInstanceMappable
 	{
 		RpcId(MultiplayerPeer.TargetPeerBroadcast, "RemoveEntity", id);
 	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void MapTriggerHit(string mapId, string triggerId)
+	{
+		GD.Print("MapTriggerHit", mapId, triggerId);
+		int playerId = multiplayer.GetRemoteSenderId();
+		Player player = gameManager.getPlayer(playerId);
+
+		double now = DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalMilliseconds;
+		Vector2 destinationPos = mapDataManager.ValidateTrigger(mapId, triggerId, player, now);
+		GD.Print("MapTriggerHit Dest", destinationPos);
+		if (destinationPos != Vector2.Zero)
+		{
+			gameManager.TeleportPlayer(player, destinationPos, now);
+			TeleportCharacter(destinationPos, playerId);
+		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void TeleportCharacter(Vector2 destinationPos, int id)
+	{
+		GD.Print("TeleportCharacter", id, destinationPos);
+		RpcId(id, "TeleportCharacter", destinationPos);
+	}
 }

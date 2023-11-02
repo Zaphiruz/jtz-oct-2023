@@ -68,16 +68,10 @@ public partial class PlayerController : EntityController, IInstanceMappable
 
 	public override void OnAreaEntered(Area2D entity)
 	{
-		if (entity.CollisionLayer == 2)
-		{
-			// Rpc(new StringName(nameof(StartBattle)));
-		}
+		// GD.Print("OnAreaEntered", entity.CollisionLayer);
+		// if (entity.CollisionLayer == LAYER_MASK.MONSTERS)
+		// {
+		// 	
+		// }
 	}
-
-	// [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-	// public void StartBattle()
-	// {
-	// 	GD.Print("Starting Battle!");
-	// 	sceneManager.ShowScene(SceneManager.SCENES.TEST_BATTLE, this);
-	// }
 }

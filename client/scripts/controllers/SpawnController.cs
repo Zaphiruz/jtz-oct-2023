@@ -15,7 +15,9 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	private PackedScene EnemiesResource;
 
 	private Dictionary<int, CharacterBody2D> entityDictionary;
-	private string mapId;
+
+	[Export]
+	public string mapId;
 
 	public override void _Ready()
 	{
@@ -27,7 +29,13 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
 		
 		entityDictionary = new Dictionary<int, CharacterBody2D>();
-		mapId = GetMeta("ID").As<string>();
+
+		// set trigger maps
+		foreach (Node node in GetTree().GetNodesInGroup("Trigger"))
+		{
+			((TriggerController) node).Triggered += MapTriggerHit;
+		}
+		
 
 		RequestSpawn(mapId);
 		//SpawnEncounters();
@@ -91,5 +99,18 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		CharacterBody2D character = null;
 		entityDictionary.TryGetValue(id, out character);
 		return character;
+	}
+
+	public void MapTriggerHit(string triggerId)
+	{
+		GD.Print("Catch Triggered", triggerId);
+		server.MapTriggerHit(mapId, triggerId);
+	}
+
+	public void TeleportEntity(int id, Vector2 newPosition)
+	{
+		GD.Print("Zoomin", newPosition);
+		CharacterBody2D character = FindEntity(id);
+		character.GlobalPosition = newPosition;
 	}
 }

@@ -69,4 +69,28 @@ public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 
 		return default(Vector2);
 	}
+
+	public Vector2 ValidateTrigger(string mapId, string triggerId, Player player, double when)
+	{
+		if (player == null)
+		{
+			return Vector2.Zero;
+		}
+		
+		MapData mapData = mapDataDict.MappedData[mapId];
+		Array<Vector2> trigggerData = mapData.triggers[triggerId];
+		Vector2 validationPos = trigggerData[0];
+		Vector2 destinationPos = trigggerData[1];
+
+		float distance = validationPos.DistanceTo(player.position);
+		double delta = when - player.lastTeleportTime;
+		GD.Print("ValidateTrigger", distance, delta);
+		if (distance < 32f && delta > 1000) // arbitrary, 32 and 5 seconds
+		{
+			return destinationPos;
+		} else
+		{
+			return Vector2.Zero;
+		}
+	}
 }

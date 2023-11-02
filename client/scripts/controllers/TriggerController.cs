@@ -3,7 +3,14 @@ using System;
 
 public partial class TriggerController : Node2D, ITriggerable
 {
+
+	[Signal]
+	public delegate void TriggeredEventHandler(string triggerId);
+
 	public Area2D area2D { get; set; }
+
+	[Export]
+	public string triggerId;
 
 	public override void _Ready()
 	{
@@ -13,5 +20,8 @@ public partial class TriggerController : Node2D, ITriggerable
 		area2D.AreaEntered += OnAreaEntered;
 	}
 
-	public virtual void OnAreaEntered(Area2D entity) { }
+	public virtual void OnAreaEntered(Area2D entity) {
+		GD.Print("Emit Triggered", triggerId);
+		EmitSignal(SignalName.Triggered, triggerId);
+	}
 }
