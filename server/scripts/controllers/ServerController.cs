@@ -110,17 +110,17 @@ public partial class ServerController : Node, IInstanceMappable
 		int playerId = multiplayer.GetRemoteSenderId();
 		GD.Print("RequestToSpawn", playerId, mapId);
 		Vector2 position = mapDataManager.GetMapSpawnLocation(mapId, SPAWN_POINT_TYPE.PLAYER);
-		ResponseToSpawn(position, playerId);
+		ResponseToSpawn(playerId, position);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void ResponseToSpawn(Vector2 position, int id)
+	public void ResponseToSpawn(int id, Vector2 position)
 	{
 		Player player = gameManager.getPlayer(id);
 		player.position = position;
 
-		GD.Print("ResponseToSpawn", position, id);
-		RpcId(MultiplayerPeer.TargetPeerBroadcast, "ResponseToSpawn", position, id, player.name);
+		GD.Print("ResponseToSpawn", player.position, player.id);
+		RpcId(MultiplayerPeer.TargetPeerBroadcast, "ResponseToSpawn", player.id, player.name, player.position);
 		gameManager.updatePlayer(player);
 	}
 

@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://naddbliipk2e"]
+[gd_scene load_steps=3 format=3 uid="uid://naddbliipk2e"]
 
 [ext_resource type="Script" path="res://scripts/controllers/ServerController.cs" id="1_isode"]
+[ext_resource type="PackedScene" uid="uid://5y63pcao7o13" path="res://scene-objects/PlayerDataOverlay.tscn" id="2_iiphy"]
 
 [node name="Server" type="Node2D"]
 script = ExtResource("1_isode")
+
+[node name="PlayerDataOverlay" parent="." instance=ExtResource("2_iiphy")]
+offset_right = 1152.0
+offset_bottom = 648.0

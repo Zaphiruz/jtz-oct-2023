@@ -14,7 +14,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	private PackedScene OtherPlayerResource;
 	private PackedScene EnemiesResource;
 
-	private Dictionary<int, CharacterBody2D> entityDictionary;
+	private Dictionary<int, EntityController> entityDictionary;
 
 	[Export]
 	public string mapId;
@@ -28,7 +28,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
 		
-		entityDictionary = new Dictionary<int, CharacterBody2D>();
+		entityDictionary = new Dictionary<int, EntityController>();
 
 		// set trigger maps
 		foreach (Node node in GetTree().GetNodesInGroup("Trigger"))
@@ -51,52 +51,55 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		server.RequestToSpawn(mapId);
 	}
 
-	public void SpawnPlayer(Vector2 location, int id, string name)
+	public void SpawnPlayer(Player playerData)
 	{
-		GD.Print("Spawning ", id);
+		GD.Print("Spawning ", playerData.id);
 
-		if (entityDictionary.ContainsKey(id)) return;
+		if (entityDictionary.ContainsKey(playerData.id)) return;
 		
-		CharacterBody2D character = (CharacterBody2D) (id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
-		character.SetMeta("ID", id);
-		character.SetMeta("Name", name ?? "???");
+		EntityController character = (EntityController) (playerData.id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
 		AddChild(character);
-		character.GlobalPosition = location;
+		character.SyncState(playerData);
 
-		entityDictionary.Add(id, character);
+		entityDictionary.Add(playerData.id, character);
 	}
 
 	public void UpdateEntities(Dictionary<int, Array<Variant>> otherPlayers)
 	{
-		foreach (System.Collections.Generic.KeyValuePair<int, Array<Variant>> data in otherPlayers)
+		foreach (Array<Variant> data in otherPlayers.Values)
 		{
-
-			UpdateEntity(data.Key, Player.From(data.Value));
+			Player playerData = Player.From(data);
+			UpdateEntity(playerData);
 		}
 	}
 
-	public void UpdateEntity(int id, Player playerData)
+	public void UpdateEntity(Player playerData)
 	{
-		CharacterBody2D match = FindEntity(id);
+		EntityController match = FindEntity(playerData.id);
 			if (match != null)
 			{
-				((EntityController) match).SyncState(playerData.position);
+				match.SyncState(playerData);
 			} else
 			{
-				SpawnPlayer(playerData.position, id, playerData.name);
+				SpawnPlayer(playerData);
 			}
 	}
 
 	public void RemoveEntity(int id)
 	{
-		CharacterBody2D character = FindEntity(id);
+		EntityController character = FindEntity(id);
 		character?.QueueFree();
 		entityDictionary.Remove(id);
 	}
 
-	public CharacterBody2D FindEntity(int id)
+	public void RemoveEntity(Player playerData)
 	{
-		CharacterBody2D character = null;
+		RemoveEntity(playerData.id);
+	}
+
+	public EntityController FindEntity(int id)
+	{
+		EntityController character = null;
 		entityDictionary.TryGetValue(id, out character);
 		return character;
 	}
@@ -110,7 +113,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	public void TeleportEntity(int id, Vector2 newPosition)
 	{
 		GD.Print("Zoomin", newPosition);
-		CharacterBody2D character = FindEntity(id);
+		EntityController character = FindEntity(id);
 		character.GlobalPosition = newPosition;
 	}
 }

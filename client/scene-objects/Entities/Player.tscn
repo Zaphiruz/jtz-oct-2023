@@ -14,8 +14,6 @@ size = Vector2(16, 21)
 collision_mask = 15
 motion_mode = 1
 script = ExtResource("1_1fpw1")
-metadata/ID = 0
-metadata/Name = ""
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -33,6 +31,7 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 theme_type_variation = &"HeaderSmall"
+horizontal_alignment = 1
 
 [node name="AnimatorController" parent="." instance=ExtResource("2_ve83g")]
 texture = ExtResource("3_u8pt6")

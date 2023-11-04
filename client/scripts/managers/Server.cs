@@ -90,10 +90,10 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	public void ResponseToSpawn(Vector2 location, int id, string name)
+	public void ResponseToSpawn(int id, string name, Vector2 position)
 	{
-		GD.Print("ResponseToSpawn", location, id, name);
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(location, id, name);
+		GD.Print("ResponseToSpawn", id, name, position);
+		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(new Player(id, name, position));
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]

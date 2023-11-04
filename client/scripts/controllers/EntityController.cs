@@ -17,6 +17,12 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	[Export]
 	public Vector2 position;
 
+	[Export]
+	public string Username;
+
+	[Export]
+	public int Id;
+
 	protected Label nameplate;
 
 
@@ -48,7 +54,6 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		position = GlobalPosition;
 
 		nameplate = GetNode<Label>("Nameplate");
-		nameplate.Text = GetMeta("Name").As<string>();
 	}
 
 	public virtual void Move(ENTITY_STATE state, float speed)
@@ -79,10 +84,12 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		}
 	}
 
-	public virtual void SyncState(Vector2 position)
+	public virtual void SyncState(Player player)
 	{
-		GlobalPosition = GlobalPosition.Lerp(position, .1f);
-		state = DerriveState(position);
+		Id = player.id;
+		nameplate.Text = Username = player.name;
+		GlobalPosition = GlobalPosition.Lerp(player.position, .1f);
+		state = DerriveState(player.position);
 		Animate(state);
 	}
 
