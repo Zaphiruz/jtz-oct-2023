@@ -1,5 +1,7 @@
 using Godot;
 using Godot.Collections;
+using System;
+using Kryz.Tweening;
 
 public partial class PlayerController : EntityController, IInstanceMappable
 {
@@ -10,6 +12,14 @@ public partial class PlayerController : EntityController, IInstanceMappable
 	protected Server server;
 	protected InputCacher inputCache;
 	protected System.Collections.Generic.Stack<ENTITY_STATE> inputStack;
+
+	protected bool isDashing = false;
+	protected double lastDash = 0d;
+	protected const float dashScalar = 1.3f;
+	protected const float baseSpeed = 250f;
+	protected const double dashDuration = 250;
+	protected const double dashCooldown = 1000d;
+
 	public override void _Ready()
 	{
 		base._Ready();
@@ -48,6 +58,8 @@ public partial class PlayerController : EntityController, IInstanceMappable
 			}
 		}
 
+		float speed = TryDash();
+
 		while(inputStack.Count > 0)
 		{
 			ENTITY_STATE stateTo = inputStack.Peek();
@@ -73,5 +85,29 @@ public partial class PlayerController : EntityController, IInstanceMappable
 		// {
 		// 	
 		// }
+	}
+
+	public float TryDash()
+	{
+		double now = DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalMilliseconds;
+		if (!isDashing && lastDash + dashCooldown < now && Input.IsActionJustPressed("DASH"))
+		{
+			GD.Print("DASH");
+			lastDash = now;
+			isDashing = true;
+			return baseSpeed;
+		}
+		
+		if(isDashing && lastDash + dashDuration < now)
+		{
+			GD.Print("Slow...");
+			isDashing = false;
+			return baseSpeed;
+		} else if (isDashing) {
+			float scalar = EasingFunctions.InOutCubic((float) ((now - lastDash) / dashDuration));
+			return baseSpeed * (dashScalar * scalar + 1);
+		}
+
+		return baseSpeed;
 	}
 }

@@ -39,7 +39,6 @@ public partial class Player : DataCollapsable<Player>, IDataCollapsable<Player>
 		args.Add(id);
 		args.Add(name);
 		args.Add(position);
-		args.Add(lastTeleportTime);
 		return args;
 	}
 
@@ -48,7 +47,6 @@ public partial class Player : DataCollapsable<Player>, IDataCollapsable<Player>
 		this.id = args[0].As<int>();
 		this.name = args[1].As<string>();
 		this.position = args[2].As<Vector2>();
-		this.lastTeleportTime = args[3].As<double>();
 
 		return this;
 	}

@@ -8,8 +8,7 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	public Dictionary<ENTITY_STATE, string> animationMap { get; set; }
 	protected Dictionary<ENTITY_STATE, Vector2> transformMap;
 
-	public const float speed = 250f;
-	public const float lerpWeight = .5f;
+	public const float lerpWeight = .1f;
 
 	[Export]
 	public ENTITY_STATE state = ENTITY_STATE.NONE;
@@ -59,11 +58,9 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	public virtual void Move(ENTITY_STATE state, float speed)
 	{
 		this.state = state;
-
-		Vector2 delta = new Vector2();
-		transformMap.TryGetValue(state, out delta);
-
+		Vector2 delta = transformMap[state];
 		Velocity = (delta * speed);
+		GD.Print("Velocity", Velocity, speed);
 
 		MoveAndSlide();
 
@@ -88,7 +85,7 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 	{
 		Id = player.id;
 		nameplate.Text = Username = player.name;
-		GlobalPosition = GlobalPosition.Lerp(player.position, .1f);
+		GlobalPosition = GlobalPosition.Lerp(player.position, lerpWeight);
 		state = DerriveState(player.position);
 		Animate(state);
 	}

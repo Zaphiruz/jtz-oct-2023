@@ -20,9 +20,9 @@ public partial class PlayerDataOverlayController : Node
 	{
 		base._Process(delta);
 
-		if (gameManager.playerCount() == 0) return;
-
 		textEdit.Text = "";
+		
+		if (gameManager.playerCount() == 0) return;
 
 		Dictionary<int, Player> players = gameManager.duplicatePlayers();
 		foreach (Player playerData in players.Values)
