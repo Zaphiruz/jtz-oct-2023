@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c2x1by6cf2jh3"]
 
 [ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_64uc4"]
-[ext_resource type="Script" path="res://scripts/controllers/SettingsController.cs" id="2_e1mlk"]
+[ext_resource type="Script" path="res://menus/SettingsController.cs" id="2_e1mlk"]
 [ext_resource type="PackedScene" uid="uid://6cfam7tphkmq" path="res://menus/MenuTextEdit.tscn" id="3_rrrs7"]
 
 [node name="SettingsMenu" type="Control"]

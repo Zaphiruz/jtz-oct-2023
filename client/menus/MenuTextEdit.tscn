@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://6cfam7tphkmq"]
 
 [ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_el6la"]
-[ext_resource type="Script" path="res://scripts/controllers/MenuTextEditController.cs" id="2_puplq"]
+[ext_resource type="Script" path="res://menus/MenuTextEditController.cs" id="2_puplq"]
 
 [node name="MenuTextEdit" type="Control"]
 layout_mode = 3

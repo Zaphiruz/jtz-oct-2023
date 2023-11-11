@@ -1,12 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://dudwu847g7i88"]
 
-[ext_resource type="Script" path="res://scripts/controllers/TriggerController.cs" id="1_s5xnj"]
+[ext_resource type="Script" path="res://scene-objects/Tilesets/TriggerController.cs" id="1_vqv0t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ic2bi"]
 
 [node name="0" type="Node2D" groups=["Trigger"]]
 position = Vector2(562, 602)
-script = ExtResource("1_s5xnj")
+script = ExtResource("1_vqv0t")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 16

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://djvfkwai2nb83"]
 
 [ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_dc2c1"]
-[ext_resource type="Script" path="res://scripts/controllers/MultiplayerController.cs" id="1_tk8wy"]
+[ext_resource type="Script" path="res://scenes/MultiplayerController.cs" id="1_tk8wy"]
 
 [node name="Multiplayer" type="Control"]
 layout_mode = 3

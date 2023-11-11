@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://d26otwkb3ks7m"]
 
-[ext_resource type="Script" path="res://scripts/controllers/EnemyController.cs" id="1_7uelu"]
+[ext_resource type="Script" path="res://scene-objects/Entities/EnemyController.cs" id="1_e72jf"]
 [ext_resource type="PackedScene" uid="uid://4qe0uy0fd0ud" path="res://scene-objects/Animations/AnimatorController.tscn" id="2_7wyj8"]
 [ext_resource type="Texture2D" uid="uid://cjyn1ieeofbmt" path="res://assets/Enemies/Enemy_001.png" id="2_rynaf"]
 
@@ -14,7 +14,7 @@ size = Vector2(12, 11)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
-script = ExtResource("1_7uelu")
+script = ExtResource("1_e72jf")
 
 [node name="Nameplate" type="Label" parent="."]
 anchors_preset = 7

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cgwlh74g7t50t"]
 
 [ext_resource type="Theme" uid="uid://c137oikqa28uy" path="res://themes/MinimalUI/MinimalUI.tres" id="1_b0p0x"]
-[ext_resource type="Script" path="res://scripts/controllers/StartGameController.cs" id="1_wf1d4"]
+[ext_resource type="Script" path="res://scenes/StartGameController.cs" id="1_wf1d4"]
 [ext_resource type="PackedScene" uid="uid://c2x1by6cf2jh3" path="res://menus/SettingsMenu.tscn" id="3_v4i2p"]
 
 [node name="StartGame" type="Control"]
