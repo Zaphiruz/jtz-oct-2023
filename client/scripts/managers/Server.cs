@@ -97,9 +97,9 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-	public void UpdatePlayerPosition(Vector2 position)
+	public void UpdatePlayerPosition(Vector2 position, int state)
 	{
-		RpcId(MultiplayerPeer.TargetPeerServer, "UpdatePlayerPosition", position);
+		RpcId(MultiplayerPeer.TargetPeerServer, "UpdatePlayerPosition", position, state);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
@@ -127,6 +127,6 @@ public partial class Server : Node, IGlobalInterface<Server>
 	{
 		GD.Print("TeleportCharacter", destinationPos);
 		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.TeleportEntity(multiplayer.GetUniqueId(), destinationPos);
-		UpdatePlayerPosition(destinationPos);
+		UpdatePlayerPosition(destinationPos, (int) ENTITY_STATE.NONE);
 	}
 }

@@ -60,7 +60,6 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		this.state = state;
 		Vector2 delta = transformMap[state];
 		Velocity = (delta * speed);
-		GD.Print("Velocity", Velocity, speed);
 
 		MoveAndSlide();
 
@@ -86,31 +85,8 @@ public partial class EntityController : CharacterBody2D, ITriggerable, IAnimatea
 		Id = player.id;
 		nameplate.Text = Username = player.name;
 		GlobalPosition = GlobalPosition.Lerp(player.position, lerpWeight);
-		state = DerriveState(player.position);
+		state = (ENTITY_STATE) player.state;
 		Animate(state);
-	}
-
-	public virtual ENTITY_STATE DerriveState(Vector2 position)
-	{
-		Vector2 normal = position.Normalized();
-		if (normal == Vector2.Up)
-		{
-			return ENTITY_STATE.UP;
-		} else if (normal == Vector2.Right)
-		{
-			return ENTITY_STATE.RIGHT;
-		} else if (normal == Vector2.Left)
-		{
-			return ENTITY_STATE.LEFT;
-		} else if (normal == Vector2.Down)
-		{
-			return ENTITY_STATE.DOWN;
-		} else if (normal ==  Vector2.Zero)
-		{
-			return ENTITY_STATE.NONE;
-		}
-
-		return ENTITY_STATE.NONE;
 	}
 
 	public virtual void ClientMove() { }

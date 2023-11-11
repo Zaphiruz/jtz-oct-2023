@@ -46,7 +46,7 @@ public partial class PlayerController : EntityController, IInstanceMappable
 		ClientMove();
 		inputCache.clearCache();
 
-		server.UpdatePlayerPosition(GlobalPosition);
+		server.UpdatePlayerPosition(GlobalPosition, (int) state);
 	}
 
 	public override void ClientMove() {

@@ -71,6 +71,18 @@ public partial class GameManager : Node, IGlobalInterface<GameManager>
 		}
 	}
 
+	public void updatePlayer(int id, Vector2 position, int state)
+	{
+		Player player;
+		bool success = players.TryGetValue(id, out player);
+		if (success)
+		{
+			player.position = position;
+			player.state = state;
+			players[id] = player;
+		}
+	}
+
 	public void updatePlayer(int id, string name)
 	{
 		Player player;

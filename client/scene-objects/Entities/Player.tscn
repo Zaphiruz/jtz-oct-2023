@@ -39,7 +39,7 @@ animationMap = {
 0: "Up",
 1: "Left",
 2: "Down",
-4: "Right"
+3: "Right"
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

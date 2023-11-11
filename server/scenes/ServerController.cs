@@ -125,9 +125,9 @@ public partial class ServerController : Node, IInstanceMappable
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-	public void UpdatePlayerPosition(Vector2 position)
+	public void UpdatePlayerPosition(Vector2 position, int state)
 	{
-		gameManager.updatePlayer(multiplayer.GetRemoteSenderId(), position);
+		gameManager.updatePlayer(multiplayer.GetRemoteSenderId(), position, state);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
