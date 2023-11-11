@@ -8,4 +8,5 @@ public enum LAYER_MASK
 	MONSTERS = 4,
 	WALLS = 8,
 	TRIGGERS = 16,
+	GATHERABLE = 32,
 }
