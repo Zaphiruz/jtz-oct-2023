@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://5y63pcao7o13"]
 
-[ext_resource type="Script" path="res://scripts/controllers/PlayerDataOverlayController.cs" id="1_xc1tw"]
+[ext_resource type="Script" path="res://scene-objects/PlayerDataOverlayController.cs" id="1_ve748"]
 
 [node name="PlayerDataOverlay" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_xc1tw")
+script = ExtResource("1_ve748")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
