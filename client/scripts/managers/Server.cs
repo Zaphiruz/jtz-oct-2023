@@ -129,4 +129,22 @@ public partial class Server : Node, IGlobalInterface<Server>
 		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.TeleportEntity(multiplayer.GetUniqueId(), destinationPos);
 		UpdatePlayerPosition(destinationPos, (int) ENTITY_STATE.NONE);
 	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void RequestStaticEntities(string mapId)
+	{
+		RpcId(MultiplayerPeer.TargetPeerServer, "RequestStaticEntities", mapId);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void UpdateStaticEntites(Array<Array<Variant>> staticEntities)
+	{
+		Array<StaticEntity> staticEntries = new Array<StaticEntity>();
+		foreach (Array<Variant> data in staticEntities)
+		{
+			staticEntries.Add(StaticEntity.From(data));
+		}
+
+		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.UpdateStaticEntities(staticEntries);
+	}
 }

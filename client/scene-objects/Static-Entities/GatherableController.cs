@@ -5,24 +5,22 @@ public partial class GatherableController : StaticBody2D
 {
 	[ExportCategory("Node2D Settings")]
 	[Export]
-	private Vector2 positon;
+	public string id;
 
 	[ExportCategory("Sprite2D Settings")]
 	[Export]
 	private Texture2D texture;
 
 	[Export(PropertyHint.Range, "1,25")]
-	private int vFrames;
+	private int vFrames = 1;
 
 	[Export(PropertyHint.Range, "1,25")]
-	private int hFrames;
+	private int hFrames = 1;
 
 	private Sprite2D sprite;
 
 	public override void _Ready()
 	{
-		GlobalPosition = positon;
-
 		sprite = GetNode<Sprite2D>("Sprite2D");
 		sprite.Texture = texture;
 		sprite.Vframes = vFrames;

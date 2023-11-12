@@ -10,7 +10,10 @@ playerSpawns = [Vector2(560, 529), Vector2(592, 529), Vector2(560, 561), Vector2
 enemySpawnRate = 500
 enemySpawnPoints = [Vector2(237, 145), Vector2(209, 497), Vector2(580, 277), Vector2(1003, 497), Vector2(978, 114)]
 resourceSpawnRate = 250
-resourceSpawnPoint = [Vector2(18, 300), Vector2(1136, 300)]
+resourceSpawnPoints = {
+"0": Vector2(18, 300),
+"1": Vector2(1136, 300)
+}
 connectedMaps = []
 triggers = {
 "0": [Vector2(574, 625), Vector2(2465, 591)],

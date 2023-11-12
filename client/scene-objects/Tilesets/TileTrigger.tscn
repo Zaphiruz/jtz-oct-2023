@@ -7,6 +7,7 @@
 [node name="0" type="Node2D" groups=["Trigger"]]
 position = Vector2(562, 602)
 script = ExtResource("1_vqv0t")
+triggerId = null
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 16

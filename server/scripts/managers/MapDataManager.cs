@@ -3,12 +3,6 @@ using Godot.Collections;
 using System;
 using System.Reflection;
 
-public enum SPAWN_POINT_TYPE
-{
-	PLAYER,
-	ENEMY,
-	RESOURCE
-}
 
 public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 {
@@ -52,9 +46,6 @@ public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 				case SPAWN_POINT_TYPE.ENEMY:
 					points = mapData.enemySpawnPoints;
 					break;
-				case SPAWN_POINT_TYPE.RESOURCE:
-					points = mapData.resourceSpawnPoint;
-					break;
 				default:
 					points = new Array<Vector2>();
 					break;
@@ -68,6 +59,49 @@ public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 		}
 
 		return default(Vector2);
+	}
+
+	public Array<Array<Variant>> GetResources(string mapId)
+	{
+		Array<Array<Variant>> ret = new Array<Array<Variant>>();
+
+		MapData mapData;
+		bool success = mapDataDict.MappedData.TryGetValue(mapId, out mapData);
+		if (success)
+		{
+			foreach(System.Collections.Generic.KeyValuePair<string, Vector2> data in mapData.resourceSpawnPoints)
+			{
+				StaticEntity thing = new StaticEntity();
+				thing.id = data.Key;
+				thing.position = data.Value;
+				thing.type = SPAWNABLES.RESOURCE_ROCK;
+
+				ret.Add(thing.ToArgs());
+			}
+		}
+
+		return ret;
+	}
+
+	public Array<Array<Variant>> GetTriggers(string mapId)
+	{
+		Array<Array<Variant>> ret = new Array<Array<Variant>>();
+
+		MapData mapData;
+		bool success = mapDataDict.MappedData.TryGetValue(mapId, out mapData);
+		if (success)
+		{
+			foreach(System.Collections.Generic.KeyValuePair<string, Array<Vector2>> data in mapData.triggers)
+			{
+				StaticEntity thing = new StaticEntity();
+				thing.id = data.Key;
+				thing.position = data.Value[0];
+				thing.type = SPAWNABLES.TRIGGER;
+
+				ret.Add(thing.ToArgs());
+			}
+		}
+		return ret;
 	}
 
 	public Vector2 ValidateTrigger(string mapId, string triggerId, Player player, double when)
@@ -85,7 +119,7 @@ public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 		float distance = validationPos.DistanceTo(player.position);
 		double delta = when - player.lastTeleportTime;
 		GD.Print("ValidateTrigger", distance, delta);
-		if (distance < 32f && delta > 1000) // arbitrary, 32 and 5 seconds
+		if (distance < 32f && delta > 1000) // arbitrary, 32 and 1 second(s)
 		{
 			return destinationPos;
 		} else

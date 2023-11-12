@@ -11,9 +11,12 @@ size = Vector2(14, 19)
 size = Vector2(16, 21)
 
 [node name="Player" type="CharacterBody2D"]
-collision_mask = 15
+collision_mask = 47
 motion_mode = 1
 script = ExtResource("1_j0qqq")
+state = null
+Username = null
+Id = null
 
 [node name="Camera2D" type="Camera2D" parent="."]
 

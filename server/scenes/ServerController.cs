@@ -1,7 +1,6 @@
 using Godot;
 using Godot.Collections;
 using System;
-using System.Linq;
 
 public partial class ServerController : Node, IInstanceMappable
 {
@@ -164,5 +163,22 @@ public partial class ServerController : Node, IInstanceMappable
 	{
 		GD.Print("TeleportCharacter", id, destinationPos);
 		RpcId(id, "TeleportCharacter", destinationPos);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void RequestStaticEntities(string mapId)
+	{
+		int id = multiplayer.GetRemoteSenderId();
+		UpdateStaticEntites(id, mapId);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority)]
+	public void UpdateStaticEntites(int id, string mapId)
+	{
+		Godot.Collections.Array<Godot.Collections.Array<Variant>> ret = mapDataManager.GetTriggers(mapId) + mapDataManager.GetResources(mapId);
+		if (ret.Count > 0)
+		{
+			RpcId(id, "UpdateStaticEntites", ret);
+		}
 	}
 }

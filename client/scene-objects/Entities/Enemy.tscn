@@ -15,6 +15,9 @@ collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_e72jf")
+state = null
+Username = null
+Id = null
 
 [node name="Nameplate" type="Label" parent="."]
 anchors_preset = 7

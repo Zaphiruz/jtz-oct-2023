@@ -1,0 +1,5 @@
+public enum SPAWNABLES
+{
+	TRIGGER,
+	RESOURCE_ROCK
+}

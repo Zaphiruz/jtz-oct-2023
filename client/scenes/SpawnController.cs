@@ -13,8 +13,12 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	private PackedScene PlayerResource;
 	private PackedScene OtherPlayerResource;
 	private PackedScene EnemiesResource;
+	private PackedScene TriggerResource;
+	private PackedScene GatherableResource;
 
 	private Dictionary<int, EntityController> entityDictionary;
+	private Dictionary<string, TriggerController> triggerDictionary;
+	private Dictionary<string, GatherableController> gatherableDictionary;
 
 	[Export]
 	public string mapId;
@@ -27,18 +31,15 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		PlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//Player.tscn");
 		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
-		
-		entityDictionary = new Dictionary<int, EntityController>();
+		TriggerResource = GD.Load<PackedScene>("res://scene-objects/Tilesets/TileTrigger.tscn");
+		GatherableResource = GD.Load<PackedScene>("res://scene-objects/Static-Entities/Gatherable.tscn");
 
-		// set trigger maps
-		foreach (Node node in GetTree().GetNodesInGroup("Trigger"))
-		{
-			((TriggerController) node).Triggered += MapTriggerHit;
-		}
-		
+		entityDictionary = new Dictionary<int, EntityController>();
+		triggerDictionary = new Dictionary<string, TriggerController>();
+		gatherableDictionary = new Dictionary<string, GatherableController>();
 
 		RequestSpawn(mapId);
-		//SpawnEncounters();
+		RequestStaticEntities(mapId);
 	}
 
 	public void DisconnectedFromServer()
@@ -58,7 +59,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		if (entityDictionary.ContainsKey(playerData.id)) return;
 		
 		EntityController character = (EntityController) (playerData.id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
-		AddChild(character);
+		GetNode<Node2D>("Players").AddChild(character);
 		character.SyncState(playerData);
 
 		entityDictionary.Add(playerData.id, character);
@@ -115,5 +116,69 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		GD.Print("Zoomin", newPosition);
 		EntityController character = FindEntity(id);
 		character.GlobalPosition = newPosition;
+	}
+
+	public void SpawnTrigger(StaticEntity entity)
+	{
+		GD.Print("Trigger Data ", entity);
+
+		TriggerController trigger;
+		if (triggerDictionary.ContainsKey(entity.id))
+		{
+			trigger = triggerDictionary[entity.id];
+		} else
+		{
+			trigger = (TriggerController)TriggerResource.Instantiate();
+			trigger.triggerId = entity.id;
+			trigger.Triggered += MapTriggerHit;
+			triggerDictionary.Add(entity.id, trigger);
+			GetNode<Node2D>("Triggers").AddChild(trigger);
+		}
+
+		trigger.GlobalPosition = entity.position;
+	}
+
+	public void SpawnResource(StaticEntity entity)
+	{
+		GD.Print("Resource Data ", entity);
+		GatherableController gatherable;
+		if (gatherableDictionary.ContainsKey(entity.id))
+		{
+			gatherable = gatherableDictionary[entity.id];
+		}
+		else
+		{
+			gatherable = (GatherableController)GatherableResource.Instantiate();
+			gatherable.id = entity.id;
+			gatherableDictionary.Add(entity.id, gatherable);
+			GetNode<Node2D>("Resources").AddChild(gatherable);
+		}
+
+		gatherable.GlobalPosition = entity.position;
+	}
+
+	public void RequestStaticEntities(string mapId)
+	{
+		server.RequestStaticEntities(mapId);
+	}
+
+	public void UpdateStaticEntities(Array<StaticEntity> staticEntities)
+	{
+		foreach (StaticEntity entity in staticEntities)
+		{
+			switch(entity.type)
+			{
+				case SPAWNABLES.RESOURCE_ROCK:
+					SpawnResource(entity);
+					break;
+
+				case SPAWNABLES.TRIGGER:
+					SpawnTrigger(entity);
+					break;
+
+				default:
+					continue;
+			}
+		}
 	}
 }
