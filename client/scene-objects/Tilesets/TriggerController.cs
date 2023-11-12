@@ -10,7 +10,7 @@ public partial class TriggerController : Node2D, ITriggerable
 	public Area2D area2D { get; set; }
 
 	[Export]
-	public string triggerId;
+	public string id;
 
 	public override void _Ready()
 	{
@@ -21,7 +21,7 @@ public partial class TriggerController : Node2D, ITriggerable
 	}
 
 	public virtual void OnAreaEntered(Area2D entity) {
-		GD.Print("Emit Triggered", triggerId);
-		EmitSignal(SignalName.Triggered, triggerId);
+		GD.Print("Emit Triggered", id);
+		EmitSignal(SignalName.Triggered, id);
 	}
 }

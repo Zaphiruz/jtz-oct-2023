@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://cirs4s5k50l34"]
+
+[ext_resource type="Script" path="res://scene-objects/Static-Entities/GatherableController.cs" id="1_vrg12"]
+[ext_resource type="Texture2D" uid="uid://fc6hxhmru7j5" path="res://assets/Gatherables/FD_Minerals_Stones.png" id="2_33yex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n7tu3"]
+size = Vector2(28, 25)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_idu4w"]
+size = Vector2(40, 36)
+
+[node name="RockGatherable" type="StaticBody2D"]
+collision_layer = 32
+script = ExtResource("1_vrg12")
+id = null
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("2_33yex")
+hframes = 9
+vframes = 12
+frame = 80
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_n7tu3")
+debug_color = Color(1, 0.6, 0.701961, 0.419608)
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 32
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_idu4w")
+debug_color = Color(0.635294, 0.341176, 1, 0.192157)

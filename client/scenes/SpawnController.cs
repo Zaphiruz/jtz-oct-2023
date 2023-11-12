@@ -14,7 +14,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	private PackedScene OtherPlayerResource;
 	private PackedScene EnemiesResource;
 	private PackedScene TriggerResource;
-	private PackedScene GatherableResource;
+	private PackedScene RockGatherableResource;
 
 	private Dictionary<int, EntityController> entityDictionary;
 	private Dictionary<string, TriggerController> triggerDictionary;
@@ -32,7 +32,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		OtherPlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//OtherPlayer.tscn");
 		EnemiesResource = GD.Load<PackedScene>("res://scene-objects//Entities//Enemy.tscn");
 		TriggerResource = GD.Load<PackedScene>("res://scene-objects/Tilesets/TileTrigger.tscn");
-		GatherableResource = GD.Load<PackedScene>("res://scene-objects/Static-Entities/Gatherable.tscn");
+		RockGatherableResource = GD.Load<PackedScene>("res://scene-objects/Static-Entities/RockGatherable.tscn");
 
 		entityDictionary = new Dictionary<int, EntityController>();
 		triggerDictionary = new Dictionary<string, TriggerController>();
@@ -129,7 +129,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		} else
 		{
 			trigger = (TriggerController)TriggerResource.Instantiate();
-			trigger.triggerId = entity.id;
+			trigger.id = entity.id;
 			trigger.Triggered += MapTriggerHit;
 			triggerDictionary.Add(entity.id, trigger);
 			GetNode<Node2D>("Triggers").AddChild(trigger);
@@ -148,8 +148,9 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		}
 		else
 		{
-			gatherable = (GatherableController)GatherableResource.Instantiate();
+			gatherable = (GatherableController)RockGatherableResource.Instantiate();
 			gatherable.id = entity.id;
+			gatherable.ActionTriggered += GatherableActionTriggered;
 			gatherableDictionary.Add(entity.id, gatherable);
 			GetNode<Node2D>("Resources").AddChild(gatherable);
 		}
@@ -180,5 +181,10 @@ public partial class SpawnController : Node2D, IInstanceMappable
 					continue;
 			}
 		}
+	}
+
+	public void GatherableActionTriggered(string gatherableId)
+	{
+		GD.Print("Gatherable Action", gatherableId);
 	}
 }
