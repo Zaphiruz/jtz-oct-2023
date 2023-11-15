@@ -10,10 +10,14 @@ public partial class Server : Node, IGlobalInterface<Server>
 		return context.GetNode<Server>(NodePath);
 	}
 
+	public const string DEFAULT_ADDRESS = "127.0.0.1";
+	public const int DEFAULT_PORT = 8910;
+	private static string CONFIG_PATH = "res://data/Server.config.json";
+
 	[Export]
-	public string ADDRESS = "127.0.0.1";
+	public string address;
 	[Export]
-	public int PORT = 8910;
+	public int port;
 
 	SceneMapper sceneMapper;
 	AuthManager authManager;
@@ -22,6 +26,17 @@ public partial class Server : Node, IGlobalInterface<Server>
 
 	public override void _Ready() {
 		base._Ready();
+
+		address = DEFAULT_ADDRESS;
+		port = DEFAULT_PORT;
+		if (ResourceLoader.Exists(CONFIG_PATH))
+		{
+			Json json = ResourceLoader.Load<Json>(CONFIG_PATH);
+			Dictionary GameServerData = (json.Data.As<Dictionary>())["GameServer"].As<Dictionary>();
+			address = GameServerData["address"].AsString();
+			port = GameServerData["port"].As<int>();
+		}
+		GD.Print("Server address ", address, " port ", port);
 		
 		sceneMapper = SceneMapper.GetInstance(this);
 		authManager = AuthManager.GetInstance(this);
@@ -31,7 +46,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	{
 		client = new ENetMultiplayerPeer();
 		
-		Error error = client.CreateClient(ADDRESS, PORT);
+		Error error = client.CreateClient(address, port);
 		if (error != Error.Ok)
 		{
 			GD.PrintErr("failed to create client", error);

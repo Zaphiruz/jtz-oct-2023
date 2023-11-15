@@ -8,20 +8,29 @@ public partial class AuthManager : Node, IGlobalInterface<AuthManager>
 	public static string NodePath = "/root/AuthManager";
 	public static AuthManager GetInstance(Node context) => context.GetNode<AuthManager>(NodePath);
 
-	private static string HOST = "http://localhost:3000/aws";
+	private static string HOST_DEFAULT = "http://localhost:3000/aws";
+	private static string CONFIG_PATH = "res://data/AuthManager.config.json";
 
 	private SceneMapper sceneMapper;
+	private string host;
 
 	public override void _Ready()
 	{
 		base._Ready();
+		host = HOST_DEFAULT;
+		if (ResourceLoader.Exists(CONFIG_PATH))
+		{
+			Json json = ResourceLoader.Load<Json>(CONFIG_PATH);
+			host = (json.Data.As<Dictionary>())["AuthenticationHost"].AsString();
+		}
+		GD.Print("AuthManger Host ", host);
 
 		sceneMapper = SceneMapper.GetInstance(this);
 	}
 
 	public void VerifyToken(int playerId, string token)
 	{
-		string url = $"{HOST}/verifyToken";
+		string url = $"{host}/verifyToken";
 		string json = $"{{\"token\": \"{token}\"}}";
 
 		GD.Print("Sending", url);

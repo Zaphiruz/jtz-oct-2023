@@ -13,9 +13,11 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 		return context.GetNode<AuthManager>(NodePath);
 	}
 
-	private static string HOST = "http://localhost:3000/aws";
+	private static string HOST_DEFAULT = "http://localhost:3000/aws";
+	private static string CONFIG_PATH = "res://data/AuthManager.config.json";
 
 	private SceneMapper sceneMapper;
+	private string host;
 
 	private string username;
 	private string session;
@@ -25,6 +27,14 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 	public override void _Ready()
 	{
 		base._Ready();
+
+		host = HOST_DEFAULT;
+		if (ResourceLoader.Exists(CONFIG_PATH))
+		{
+			Json json = ResourceLoader.Load<Json>(CONFIG_PATH);
+			host = (json.Data.As<Dictionary>())["AuthenticationHost"].AsString();
+		}
+		GD.Print("AuthManger Host ", host);
 
 		sceneMapper = SceneMapper.GetInstance(this);
 	}
@@ -38,7 +48,7 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 	{
 		this.username = username;
 
-		string url = $"{HOST}/authenticateUser";
+		string url = $"{host}/authenticateUser";
 		string json = $"{{\"username\": \"{username}\", \"password\": \"{password}\"}}";
 
 		GD.Print("Sending", url);
@@ -76,7 +86,7 @@ public partial class AuthManager : HttpRequest, IGlobalInterface<AuthManager>
 			return;
 		}
 
-		string url = $"{HOST}/challengeUser";
+		string url = $"{host}/challengeUser";
 		string json = $"{{\"challengeName\": \"{this.challengeName}\", \"challengeResponses\": {{ \"username\": \"{this.username}\", \"authenticator_code\": \"{authenticatorToken}\", \"session\": \"{this.session}\" }} }}";
 
 		GD.Print("Sending", url);
