@@ -1,32 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { CharacterConfig } from '../configs/character.config.interface';
 import { NewCharacterRequest } from '../models/new-character.request';
-
+import { Character } from '../schemas/character.schema';
 
 @Injectable()
 export class CharacterService {
 	private readonly characterConfig: CharacterConfig;
 
-	constructor(private readonly configService: ConfigService) {
+	constructor(@InjectModel(Character.name) private characterModel: Model<Character>, private readonly configService: ConfigService) {
 		this.characterConfig = configService.get<CharacterConfig>(
 			'CharacterConfig',
 		);
 	}
 
-	async getCharacter(username: string, authToken: string) {
+	async findOne(username: string, authToken: string): Promise<Character> {
 		// await this.verifyToken(authToken);
-		return {};
+		username = username.toLowerCase();
+		return this.characterModel.findOne({ username }).exec();
 	}
 
-	async newCharacter(newCharacterRequest: NewCharacterRequest, authToken: string) {
+	async create(newCharacterRequest: NewCharacterRequest, authToken: string): Promise<Character> {
 		// await this.verifyToken(authToken);
-		return {};
+		newCharacterRequest.username = newCharacterRequest.username.toLowerCase();
+		return this.characterModel.create(newCharacterRequest);
 	}
 
 	async verifyToken(authToken: string) {
-		return fetch(`${this.characterConfig.authServerHost}/verify-token`, {
+		return fetch(`${this.characterConfig.authServerHost}/verifyToken`, {
 			method: "POST",
 			body: JSON.stringify({ token: authToken }),
 			cache: "no-cache",
