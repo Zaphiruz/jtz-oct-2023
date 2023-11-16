@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Headers, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Param, Headers, Post, Body, BadRequestException, Put } from '@nestjs/common';
 
 import { CharacterService } from '../services/character.service';
 import { NewCharacterRequest } from '../models/new-character.request';
+import { UpdateCharacterRequest } from '../models/update-character.request';
 import { Character } from '../schemas/character.schema';
 
 
@@ -17,5 +18,10 @@ export class CharacterController {
 	@Post('')
 	newCharacter(@Body() newCharacterRequest: NewCharacterRequest, @Headers('authentication') authToken: string): Promise<Character | BadRequestException> {
 		return this.characterService.create(newCharacterRequest, authToken);
+	}
+
+	@Put(':username')
+	updateCharacter(@Param('username') username: string, @Body() updateCharacterRequest: UpdateCharacterRequest, @Headers('authentication') authToken: string): Promise<Character | BadRequestException> {
+		return this.characterService.update(username, updateCharacterRequest, authToken);
 	}
 }

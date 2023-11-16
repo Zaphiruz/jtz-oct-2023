@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { CharacterConfig } from '../configs/character.config.interface';
+import { UpdateCharacterRequest } from '../models/update-character.request';
 import { NewCharacterRequest } from '../models/new-character.request';
 import { Character } from '../schemas/character.schema';
 
@@ -42,6 +43,12 @@ export class CharacterService {
 					throw error;
 				}
 			});
+	}
+
+	async update(username: string, updateCharacterRequest: UpdateCharacterRequest, authToken: string): Promise<Character | BadRequestException> {
+		await this.validateToken(authToken);
+		username = username.toLowerCase();
+		return this.characterModel.findOneAndUpdate({ username }, updateCharacterRequest).exec();
 	}
 
 	async verifyToken(authToken: string) {
