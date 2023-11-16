@@ -17,22 +17,22 @@ export class CharacterService {
 		);
 	}
 
-	async findOne(username: string, authToken: string): Promise<Character | BadRequestException> {
+	async validateToken(authToken: string) {
 		let response = await this.verifyToken(authToken);
 		if (!response.ok) {
 			console.error("Bad Token");
 			throw new BadRequestException('Invalid Token', { cause: new Error("Invalid Token"), description: "The authToken is not valid." });
 		}
+	}
+
+	async findOne(username: string, authToken: string): Promise<Character | BadRequestException> {
+		await this.validateToken(authToken);
 		username = username.toLowerCase();
 		return this.characterModel.findOne({ username }).exec();
 	}
 
 	async create(newCharacterRequest: NewCharacterRequest, authToken: string): Promise<Character | BadRequestException> {
-		let response = await this.verifyToken(authToken);
-		if (!response.ok) {
-			console.error("Bad Token");
-			throw new BadRequestException('Invalid Token', { cause: new Error("Invalid Token"), description: "The authToken is not valid." });
-		}
+		await this.validateToken(authToken);
 		newCharacterRequest.username = newCharacterRequest.username.toLowerCase();
 		return this.characterModel.create(newCharacterRequest)
 			.catch(error => {
