@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Headers, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Headers, Post, Body, BadRequestException } from '@nestjs/common';
 
 import { CharacterService } from '../services/character.service';
 import { NewCharacterRequest } from '../models/new-character.request';
@@ -10,12 +10,12 @@ export class CharacterController {
 	constructor(private readonly characterService: CharacterService) { }
 
 	@Get(':username')
-	getCharacter(@Param('username') username: string, @Headers('authentication') authToken: string): Promise<Character> {
+	getCharacter(@Param('username') username: string, @Headers('authentication') authToken: string): Promise<Character | BadRequestException> {
 		return this.characterService.findOne(username, authToken);
 	}
 
 	@Post('')
-	newCharacter(@Body() newCharacterRequest: NewCharacterRequest, @Headers('authentication') authToken: string): Promise<Character> {
+	newCharacter(@Body() newCharacterRequest: NewCharacterRequest, @Headers('authentication') authToken: string): Promise<Character | BadRequestException> {
 		return this.characterService.create(newCharacterRequest, authToken);
 	}
 }

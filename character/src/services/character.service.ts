@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -17,16 +17,31 @@ export class CharacterService {
 		);
 	}
 
-	async findOne(username: string, authToken: string): Promise<Character> {
-		// await this.verifyToken(authToken);
+	async findOne(username: string, authToken: string): Promise<Character | BadRequestException> {
+		let response = await this.verifyToken(authToken);
+		if (!response.ok) {
+			console.error("Bad Token");
+			throw new BadRequestException('Invalid Token', { cause: new Error("Invalid Token"), description: "The authToken is not valid." });
+		}
 		username = username.toLowerCase();
 		return this.characterModel.findOne({ username }).exec();
 	}
 
-	async create(newCharacterRequest: NewCharacterRequest, authToken: string): Promise<Character> {
-		// await this.verifyToken(authToken);
+	async create(newCharacterRequest: NewCharacterRequest, authToken: string): Promise<Character | BadRequestException> {
+		let response = await this.verifyToken(authToken);
+		if (!response.ok) {
+			console.error("Bad Token");
+			throw new BadRequestException('Invalid Token', { cause: new Error("Invalid Token"), description: "The authToken is not valid." });
+		}
 		newCharacterRequest.username = newCharacterRequest.username.toLowerCase();
-		return this.characterModel.create(newCharacterRequest);
+		return this.characterModel.create(newCharacterRequest)
+			.catch(error => {
+				if (error.code === 11000) {
+					return this.characterModel.findOne({ username: newCharacterRequest.username }).exec();
+				} else {
+					throw error;
+				}
+			});
 	}
 
 	async verifyToken(authToken: string) {
