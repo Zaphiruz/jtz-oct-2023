@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CharacterModule } from './character.module';
+
+import { PrivateCharacterModule } from './character.private.module';
+import { PublicCharacterModule } from './character.public.module';
 
 @Module({
 	imports: [
 		MongooseModule.forRoot(process.env.MONGODB_HOST),
-		CharacterModule
+		PublicCharacterModule,
+		PrivateCharacterModule,
 	],
 })
 export class AppModule { }

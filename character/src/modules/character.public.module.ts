@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { CharacterService } from '../services/character.service';
-import { CharacterController } from '../controllers/character.controller';
+import { PublicCharacterController } from '../controllers/character.public.controller';
 import { Character, CharacterSchema } from '../schemas/character.schema';
 import CharacterConfig from '../configs/character.config';
 
@@ -15,8 +15,8 @@ import CharacterConfig from '../configs/character.config';
 		}),
 		MongooseModule.forFeature([{ name: Character.name, schema: CharacterSchema }]),
 	],
-	controllers: [CharacterController],
+	controllers: [PublicCharacterController],
 	providers: [CharacterService],
 	exports: [CharacterService],
 })
-export class CharacterModule { }
+export class PublicCharacterModule { }

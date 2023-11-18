@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -18,22 +18,12 @@ export class CharacterService {
 		);
 	}
 
-	async validateToken(authToken: string) {
-		let response = await this.verifyToken(authToken);
-		if (!response.ok) {
-			console.error("Bad Token");
-			throw new BadRequestException('Invalid Token', { cause: new Error("Invalid Token"), description: "The authToken is not valid." });
-		}
-	}
-
-	async findOne(username: string, authToken: string): Promise<Character | BadRequestException> {
-		await this.validateToken(authToken);
+	async findOne(username: string): Promise<Character> {
 		username = username.toLowerCase();
 		return this.characterModel.findOne({ username }).exec();
 	}
 
-	async create(newCharacterRequest: NewCharacterRequest, authToken: string): Promise<Character | BadRequestException> {
-		await this.validateToken(authToken);
+	async create(newCharacterRequest: NewCharacterRequest): Promise<Character> {
 		newCharacterRequest.username = newCharacterRequest.username.toLowerCase();
 		return this.characterModel.create(newCharacterRequest)
 			.catch(error => {
@@ -45,21 +35,8 @@ export class CharacterService {
 			});
 	}
 
-	async update(username: string, updateCharacterRequest: UpdateCharacterRequest, authToken: string): Promise<Character | BadRequestException> {
-		await this.validateToken(authToken);
+	async update(username: string, updateCharacterRequest: UpdateCharacterRequest): Promise<Character> {
 		username = username.toLowerCase();
 		return this.characterModel.findOneAndUpdate({ username }, updateCharacterRequest).exec();
-	}
-
-	async verifyToken(authToken: string) {
-		return fetch(`${this.characterConfig.authServerHost}/verifyToken`, {
-			method: "POST",
-			body: JSON.stringify({ token: authToken }),
-			cache: "no-cache",
-			headers: {
-				"Content-Type": "application/json",
-				"Accept": "application/json"
-			}
-		});
 	}
 }

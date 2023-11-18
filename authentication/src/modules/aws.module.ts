@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AwsCognitoAuthService } from '../services/aws-cognito-auth.service';
-import { AwsController } from '../controllers/aws.controller';
+import { PrivateAwsController } from '../controllers/aws.private.controller';
+import { PublicAwsController } from '../controllers/aws.public.controller';
 import { ConfigModule } from '@nestjs/config';
 import AwsConfig from '../configs/aws-congito-auth.config';
 
@@ -11,7 +12,7 @@ import AwsConfig from '../configs/aws-congito-auth.config';
 			load: [AwsConfig],
 		}),
 	],
-	controllers: [AwsController],
+	controllers: [PrivateAwsController, PublicAwsController],
 	providers: [AwsCognitoAuthService],
 	exports: [AwsCognitoAuthService],
 })
