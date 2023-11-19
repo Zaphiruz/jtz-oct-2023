@@ -37,6 +37,6 @@ export class CharacterService {
 
 	async update(username: string, updateCharacterRequest: UpdateCharacterRequest): Promise<Character> {
 		username = username.toLowerCase();
-		return this.characterModel.findOneAndUpdate({ username }, updateCharacterRequest).exec();
+		return this.characterModel.findOneAndUpdate({ username }, updateCharacterRequest, { new: true }).exec();
 	}
 }
