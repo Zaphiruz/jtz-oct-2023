@@ -21,6 +21,7 @@ GameManager="*res://scripts/managers/GameManager.cs"
 MapDataManager="*res://scripts/managers/MapDataManager.cs"
 AuthManager="*res://scripts/managers/AuthManager.cs"
 SceneMapper="*res://scripts/managers/SceneMapper.cs"
+CharacterManager="*res://scripts/managers/CharacterManager.cs"
 
 [dotnet]
 

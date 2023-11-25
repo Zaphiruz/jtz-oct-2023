@@ -98,6 +98,7 @@ public partial class ServerController : Node, IInstanceMappable
 		} else
 		{
 			GD.Print("Valid token", playerId);
+			// fetch and save char object on the server
 			gameManager.updatePlayer(playerId, json["username"].As<string>());
 			RpcId(playerId, "ClientRegisterResponse", true);
 		}
