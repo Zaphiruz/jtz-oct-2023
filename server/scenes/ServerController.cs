@@ -17,6 +17,7 @@ public partial class ServerController : Node, IInstanceMappable
 	private MapDataManager mapDataManager;
 	private SceneMapper sceneMapper;
 	private AuthManager authManager;
+	private CharacterManager characterManager;
 
 	public override void _Ready()
 	{
@@ -26,6 +27,7 @@ public partial class ServerController : Node, IInstanceMappable
 		gameManager = GameManager.GetInstance(this);
 		mapDataManager = MapDataManager.GetInstance(this);
 		authManager = AuthManager.GetInstance(this);
+		characterManager = CharacterManager.GetInstance(this);
 
 		StartServer();
 	}
@@ -60,6 +62,8 @@ public partial class ServerController : Node, IInstanceMappable
 			multiplayer.PeerDisconnected += ClientDisconencted;
 
 			GD.Print("Server Started");
+			characterManager.ConnectWebsocket();
+
 		}
 
 		return error;
