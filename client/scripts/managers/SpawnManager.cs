@@ -3,8 +3,11 @@ using Godot.Collections;
 using System;
 using System.Linq;
 
-public partial class SpawnController : Node2D, IInstanceMappable
+public partial class SpawnManager : Node2D, IInstanceMappable, IGlobalInterface<SpawnManager>
 {
+	public static string NodePath = "/root/SpawnManager";
+	public static SpawnManager GetInstance(Node context) => context.GetNode<SpawnManager>(NodePath);
+
 	public static string LABEL = "Spawn";
 
 	private Server server;
@@ -20,12 +23,12 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	private Dictionary<string, TriggerController> triggerDictionary;
 	private Dictionary<string, GatherableController> gatherableDictionary;
 
-	[Export]
-	public string mapId;
+	public Node activeMap;
+	public string activeMapId;
 
 	public override void _Ready()
 	{
-		server = Server.GetInstance(this, SpawnController.LABEL);
+		server = Server.GetInstance(this, SpawnManager.LABEL);
 		sceneManager = SceneManager.GetInstance(this);
 
 		PlayerResource = GD.Load<PackedScene>("res://scene-objects//Entities//Player.tscn");
@@ -37,14 +40,24 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		entityDictionary = new Dictionary<int, EntityController>();
 		triggerDictionary = new Dictionary<string, TriggerController>();
 		gatherableDictionary = new Dictionary<string, GatherableController>();
+	}
 
+	public void setActiveMap(Node activeMap, string mapId)
+	{
+		this.activeMap = activeMap;
+		this.activeMapId = mapId;
+		spawnOnMap(mapId);
+	}
+
+	public void spawnOnMap(string mapId)
+	{
 		RequestSpawn(mapId);
 		RequestStaticEntities(mapId);
 	}
 
 	public void DisconnectedFromServer()
 	{
-		sceneManager.ShowScene(SceneManager.SCENES.MULTIPLAYER_LOBBY, this);
+		sceneManager.ShowScene(SceneManager.SCENES.MULTIPLAYER_LOBBY, activeMap);
 	}
 
 	private void RequestSpawn(string mapId)
@@ -59,7 +72,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 		if (entityDictionary.ContainsKey(playerData.id)) return;
 		
 		EntityController character = (EntityController) (playerData.id == server.multiplayer.GetUniqueId() ? PlayerResource.Instantiate() : OtherPlayerResource.Instantiate());
-		GetNode<Node2D>("Players").AddChild(character);
+		activeMap.GetNode<Node2D>("Players").AddChild(character);
 		character.SyncState(playerData);
 
 		entityDictionary.Add(playerData.id, character);
@@ -108,7 +121,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 	public void MapTriggerHit(string triggerId)
 	{
 		GD.Print("Catch Triggered", triggerId);
-		server.MapTriggerHit(mapId, triggerId);
+		server.MapTriggerHit(activeMapId, triggerId);
 	}
 
 	public void TeleportEntity(int id, Vector2 newPosition)
@@ -132,7 +145,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 			trigger.id = entity.id;
 			trigger.Triggered += MapTriggerHit;
 			triggerDictionary.Add(entity.id, trigger);
-			GetNode<Node2D>("Triggers").AddChild(trigger);
+			activeMap.GetNode<Node2D>("Triggers").AddChild(trigger);
 		}
 
 		trigger.GlobalPosition = entity.position;
@@ -152,7 +165,7 @@ public partial class SpawnController : Node2D, IInstanceMappable
 			gatherable.id = entity.id;
 			gatherable.ActionTriggered += GatherableActionTriggered;
 			gatherableDictionary.Add(entity.id, gatherable);
-			GetNode<Node2D>("Resources").AddChild(gatherable);
+			activeMap.GetNode<Node2D>("Resources").AddChild(gatherable);
 		}
 
 		gatherable.GlobalPosition = entity.position;

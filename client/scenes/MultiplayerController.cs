@@ -144,10 +144,10 @@ public partial class MultiplayerController : Control, IInstanceMappable
 		signInError.Visible = true;
 	}
 
-	public void EnterGame()
+	public void EnterGame(string mapId)
 	{
 		GD.Print("Starting Game!");
-		sceneManager.ShowScene(SceneManager.SCENES.TEST_2_PLAYER, this);
+		sceneManager.ShowScene(SceneManager.SCENES.GAME, this, mapId);
 	}
 
 	public void onStartGameButtonDown()

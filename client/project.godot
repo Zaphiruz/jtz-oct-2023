@@ -22,6 +22,7 @@ DataManager="*res://scripts/managers/DataManager.cs"
 Server="*res://scripts/managers/Server.cs"
 AuthManager="*res://scripts/managers/AuthManager.cs"
 SceneMapper="*res://scripts/managers/SceneMapper.cs"
+SpawnManager="*res://scripts/managers/SpawnManager.cs"
 
 [display]
 

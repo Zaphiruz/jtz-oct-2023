@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://j7u3hdobwy3f"]
+
+[node name="0002" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+format = 2
+
+[node name="Triggers" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Resources" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Players" type="Node2D" parent="."]
+unique_name_in_owner = true

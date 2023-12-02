@@ -1,11 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://8imh3uxb6od3"]
+[gd_scene load_steps=2 format=3 uid="uid://8imh3uxb6od3"]
 
-[ext_resource type="Script" path="res://scenes/SpawnController.cs" id="1_rmwhb"]
 [ext_resource type="TileSet" uid="uid://dtmed6gx1p41b" path="res://scene-objects/Tilesets/CastleTileset.tres" id="2_8or6m"]
 
-[node name="Test_2Player" type="Node2D"]
-script = ExtResource("1_rmwhb")
-mapId = "0001"
+[node name="0001" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("2_8or6m")

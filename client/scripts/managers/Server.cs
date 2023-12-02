@@ -78,7 +78,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public void _Disconnected()
 	{
 		GD.Print("disconnected from server");
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.DisconnectedFromServer();
+		sceneMapper.getInstanceOf<SpawnManager>(SpawnManager.LABEL)?.DisconnectedFromServer();
 		sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.ConnectionFailed("disconnected from server");
 	}
 
@@ -89,11 +89,11 @@ public partial class Server : Node, IGlobalInterface<Server>
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	public void ClientRegisterResponse(bool isOk)
+	public void ClientRegisterResponse(bool isOk, string mapId)
 	{
 		if (isOk)
 		{
-			sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.EnterGame();
+			sceneMapper.getInstanceOf<MultiplayerController>(MultiplayerController.LABEL)?.EnterGame(mapId);
 		}
 	}
 
@@ -108,7 +108,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public void ResponseToSpawn(int id, string name, Vector2 position)
 	{
 		GD.Print("ResponseToSpawn", id, name, position);
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.SpawnPlayer(new Player(id, name, position));
+		sceneMapper.getInstanceOf<SpawnManager>(SpawnManager.LABEL)?.SpawnPlayer(new Player(id, name, position));
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
@@ -121,13 +121,13 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public void UpdateEntities(Dictionary<int, Array<Variant>> players)
 	{
 		players.Remove(multiplayer.GetUniqueId());
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.UpdateEntities(players);
+		sceneMapper.getInstanceOf<SpawnManager>(SpawnManager.LABEL)?.UpdateEntities(players);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
 	public void RemoveEntity(int id)
 	{
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.RemoveEntity(id);
+		sceneMapper.getInstanceOf<SpawnManager>(SpawnManager.LABEL)?.RemoveEntity(id);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority)]
@@ -141,7 +141,7 @@ public partial class Server : Node, IGlobalInterface<Server>
 	public void TeleportCharacter(Vector2 destinationPos)
 	{
 		GD.Print("TeleportCharacter", destinationPos);
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.TeleportEntity(multiplayer.GetUniqueId(), destinationPos);
+		sceneMapper.getInstanceOf<SpawnManager>(SpawnManager.LABEL)?.TeleportEntity(multiplayer.GetUniqueId(), destinationPos);
 		UpdatePlayerPosition(destinationPos, (int) ENTITY_STATE.NONE);
 	}
 
@@ -160,6 +160,6 @@ public partial class Server : Node, IGlobalInterface<Server>
 			staticEntries.Add(StaticEntity.From(data));
 		}
 
-		sceneMapper.getInstanceOf<SpawnController>(SpawnController.LABEL)?.UpdateStaticEntities(staticEntries);
+		sceneMapper.getInstanceOf<SpawnManager>(SpawnManager.LABEL)?.UpdateStaticEntities(staticEntries);
 	}
 }

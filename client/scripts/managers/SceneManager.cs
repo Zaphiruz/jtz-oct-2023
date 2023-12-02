@@ -8,42 +8,59 @@ public partial class SceneManager : Node, IGlobalInterface<SceneManager>
 	public static string NodePath = "/root/SceneManager";
 	public static SceneManager GetInstance(Node context) => context.GetNode<SceneManager>(NodePath);
 
+	private SpawnManager spawnManager;
+
 	public enum SCENES
 	{
 		START_GAME,
 		MULTIPLAYER_LOBBY,
-		TEST_2_PLAYER,
-		TEST_BATTLE
+		GAME
 	}
 
-	private Dictionary<SCENES, string> sceneDict;
+	private Dictionary<SCENES, string> sceneDict = new Dictionary<SCENES, string>()
+	{
+		{ SCENES.START_GAME, "res://scenes//StartGame.tscn" },
+		{ SCENES.MULTIPLAYER_LOBBY, "res://scenes//Multiplayer.tscn" },
+		{ SCENES.GAME, "res://scenes/game-maps/" }
+	};
 
 	public override void _Ready()
 	{
 		base._Ready();
 
-		sceneDict = new Dictionary<SCENES, string>()
-		{
-			{ SCENES.START_GAME, "res://scenes//StartGame.tscn" },
-			{ SCENES.MULTIPLAYER_LOBBY, "res://scenes//Multiplayer.tscn" },
-			{ SCENES.TEST_2_PLAYER, "res://scenes//Test_2Player.tscn" },
-			{ SCENES.TEST_BATTLE, "res://scenes//Test_Battle.tscn" },
+		spawnManager = SpawnManager.GetInstance(this);
+	}
 
-		};
+	public Node LoadScene(SCENES scene, string mapId)
+	{
+		if (scene != SCENES.GAME)
+		{
+			return LoadScene(scene);
+		}
+
+		string scenePath = $"{sceneDict[scene]}{mapId}.tscn";
+
+		Node activeMap = GD.Load<PackedScene>(scenePath).Instantiate();
+		spawnManager.setActiveMap(activeMap, mapId);
+
+		return activeMap;
 	}
 
 	public Node LoadScene(SCENES scene)
 	{
-		
-		string scenePath;
-		bool keyInDict = sceneDict.TryGetValue(scene, out scenePath);
-
-		if (!keyInDict)
+		if (scene == SCENES.GAME)
 		{
-			throw new Exception("NO KEY IN SCENE DICT");
+			throw new Exception("Game scene needs mapId");
 		}
+		
+		string scenePath = sceneDict[scene];
 
 		return GD.Load<PackedScene>(scenePath).Instantiate();
+	}
+
+	public void ShowScene(SCENES scene, Node context, string mapId)
+	{
+		ShowScene(LoadScene(scene, mapId), context);
 	}
 
 	public void ShowScene(SCENES scene, Node context)
