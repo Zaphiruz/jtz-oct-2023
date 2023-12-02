@@ -31,11 +31,13 @@ export class CharacterWebsocketGateway implements OnGatewayConnection, OnGateway
 	}
 
 	handleConnection(client: Socket) {
+		console.log('Socket Connected', client.id);
 		this.connectedSockets[client.id] = {
 			socket: client,
 			isValid: false,
 			validationHandler: setTimeout(() => {
 				if (!this.isClientValid(client)) {
+					console.log('Socket Not Validated', client.id);
 					client.disconnect(true);
 				}
 			}, 5 * 1000),
@@ -43,11 +45,13 @@ export class CharacterWebsocketGateway implements OnGatewayConnection, OnGateway
 	}
 
 	handleDisconnect(client: Socket) {
+		console.log('Socket Disconnected', client.id);
 		delete this.connectedSockets[client.id];
 	}
 
 	@SubscribeMessage('identity')
 	async identity(@MessageBody() data: IdentityGatewayRequest, @ConnectedSocket() client: Socket): Promise<IdentityGatewayResponse> {
+		console.log('Socket Identified', client.id);
 		this.connectedSockets[client.id].isValid = true;
 		clearTimeout(this.connectedSockets[client.id].validationHandler);
 		return { ok: true };

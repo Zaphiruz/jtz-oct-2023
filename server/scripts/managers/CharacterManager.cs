@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using Godot.Collections;
-using H.Socket.IO;
+using SocketIOClient;
 
 public partial class CharacterManager : Node, IGlobalInterface<CharacterManager>
 {
@@ -12,7 +12,7 @@ public partial class CharacterManager : Node, IGlobalInterface<CharacterManager>
 	private static string CONFIG_PATH = "res://data/CharacterManager.config.json";
 	private string host;
 
-	private SocketIoClient socketIoClient;
+	private SocketIOClient.SocketIO socketIoClient;
 	private bool isConnected;
 
 	public class AckMessage
@@ -30,8 +30,6 @@ public partial class CharacterManager : Node, IGlobalInterface<CharacterManager>
 			host = (json.Data.As<Dictionary>())["CharacterHostWs"].AsString();
 		}
 
-		
-
 		GD.Print("CharacterManager WS Host ", host);
 	}
 
@@ -40,34 +38,31 @@ public partial class CharacterManager : Node, IGlobalInterface<CharacterManager>
 		if (isConnected)
 			return;
 
-		socketIoClient = new SocketIoClient();
-		socketIoClient.Connected += SocketConnected;
-		socketIoClient.Disconnected += SocketDisconnected;
-		socketIoClient.ErrorReceived += SocketError;
+		socketIoClient = new SocketIOClient.SocketIO(host);
+		socketIoClient.OnConnected += SocketConnected;
+		socketIoClient.OnDisconnected += SocketDisconnected;
+		socketIoClient.OnError += SocketError;
 
-		await socketIoClient.ConnectAsync(new Uri(host));
+		GD.Print("Connecting to character websocket server", host);
+		await socketIoClient.ConnectAsync();
 	}
 
-	private async void SocketConnected(object sender, SocketIoClient.ConnectedEventArgs args)
+	private async void SocketConnected(object sender, object e)
 	{
 		isConnected = true;
-		GD.Print("Connected to character websocket server", args);
-		await socketIoClient.Emit("identity", "server");
+		GD.Print("Connected to character websocket server", e);
+		await socketIoClient.EmitAsync("identity", "server");
 		GD.Print("identified");
 	}
-	private void SocketDisconnected(object sender, SocketIoClient.DisconnectedEventArgs args)
+	private void SocketDisconnected(object sender, object e)
 	{
 		isConnected = false;
-		GD.Print("Disconnected from character websocket server", args);
+		GD.Print("Disconnected from character websocket server", e);
 	}
 
-	private void SocketError(object sender, SocketIoClient.ErrorReceivedEventArgs args)
+	private void SocketError(object sender, object e)
 	{
-		GD.Print("Error from character websocket server", args);
-	}
-
-	private void SocketException(object sender, SocketIoClient.ExceptionOccurredEventArgs args)
-	{
-		GD.Print("Exception from character websocket server", args);
+		isConnected = false;
+		GD.Print("Disconnected from character websocket server", e);
 	}
 }
