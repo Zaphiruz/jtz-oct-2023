@@ -7,7 +7,7 @@ public partial class MapData : Resource
 	public MapData()
 	{
 		playerSpawns = new Array<Vector2>();
-		enemySpawnPoints = new Array<Vector2>();
+		enemySpawnPoints = new Dictionary<int, Array<Vector2>>();
 		resourceSpawnPoints = new Dictionary<string, Vector2>();
 		connectedMaps = new Array<string>();
 		triggers = new Dictionary<string, Array<Vector2>>();
@@ -21,8 +21,9 @@ public partial class MapData : Resource
 
 	[Export]
 	public int enemySpawnRate;
+
 	[Export]
-	public Array<Vector2> enemySpawnPoints;
+	public Dictionary<int, Array<Vector2>> enemySpawnPoints;
 
 	[Export]
 	public int resourceSpawnRate;

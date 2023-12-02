@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System;
+using System.Linq;
 using System.Reflection;
 
 
@@ -44,7 +45,7 @@ public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 					points = mapData.playerSpawns;
 					break;
 				case SPAWN_POINT_TYPE.ENEMY:
-					points = mapData.enemySpawnPoints;
+					points = mapData.enemySpawnPoints[0];	// FIX THIS!
 					break;
 				default:
 					points = new Array<Vector2>();
@@ -59,6 +60,31 @@ public partial class MapDataManager : Node, IGlobalInterface<GameManager>
 		}
 
 		return default(Vector2);
+	}
+
+	public Array<Array<Variant>> GetEnemies(string mapId)
+	{
+		Array<Array<Variant>> ret = new Array<Array<Variant>>();
+
+		MapData mapData;
+		bool success = mapDataDict.MappedData.TryGetValue(mapId, out mapData);
+		if (success)
+		{
+			foreach (System.Collections.Generic.KeyValuePair<int, Array<Vector2>> data in mapData.enemySpawnPoints)
+			{
+				foreach(Vector2 point in data.Value)
+				{
+					Enemy thing = new Enemy();
+					thing.id = data.Key.ToString(); // Get unique ID
+					thing.position = point;
+					thing.type = (ENEMIES)data.Key;
+
+					ret.Add(thing.ToArgs());
+				}
+			}
+		}
+
+		return ret;
 	}
 
 	public Array<Array<Variant>> GetResources(string mapId)

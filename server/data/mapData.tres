@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=4 format=3]
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://c5duh6hxpgsov"]
 
 [ext_resource type="Script" path="res://scripts/resources/MapDataDictionary.cs" id="1_4kict"]
 [ext_resource type="Script" path="res://scripts/resources/MapData.cs" id="1_6yjp6"]
@@ -8,7 +8,10 @@ script = ExtResource("1_6yjp6")
 mapName = "Castle Roof"
 playerSpawns = [Vector2(560, 529), Vector2(592, 529), Vector2(560, 561), Vector2(592, 592)]
 enemySpawnRate = 500
-enemySpawnPoints = [Vector2(237, 145), Vector2(209, 497), Vector2(580, 277), Vector2(1003, 497), Vector2(978, 114)]
+enemySpawnPoints = {
+0: [Vector2(237, 145), Vector2(209, 497), Vector2(580, 277)],
+1: [Vector2(1003, 497), Vector2(978, 114)]
+}
 resourceSpawnRate = 250
 resourceSpawnPoints = {
 "0": Vector2(18, 300),
